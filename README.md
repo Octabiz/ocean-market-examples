@@ -23,7 +23,7 @@ Complete, working examples of everything you can build for **Ocean Market**, the
 ## What you need
 
 - **Node.js 18 or newer.** The tools in `tools/` use only Node's built-ins, so there is nothing to install.
-- **An Octabiz developer account** when you're ready to submit. Sign up at [octabiz.ai/developer](https://octabiz.ai/developer).
+- **An Octabiz developer account** when you're ready to submit. Sign up at [octabiz.ai/developer](https://octabiz.ai/developer), then choose a developer plan under **Developer → Billing**. A new account has no plan yet, and you need one to publish. If the **New app** screen shows “Needs Pro plan” next to *Embedded app* or *Connector*, your plan doesn't include that type yet.
 
 ## Quick start
 

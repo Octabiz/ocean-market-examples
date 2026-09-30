@@ -93,6 +93,10 @@ This opens a mock Octabiz at `http://localhost:4400`. It frames your app from a 
 
 **Listing screenshots:** open `http://localhost:4400/?screenshot=1` in a 1280×800 window to get just your app, edge to edge. That's the size the developer portal asks for.
 
+## Your developer plan
+
+Embedded apps need a developer plan that includes them. Check **Developer → Billing** in the portal. When the **New app** screen shows “Needs Pro plan” next to *Embedded app*, your current plan doesn't include embedded apps.
+
 ## Checklist before you submit
 
 - [ ] `node tools/validate.mjs` passes.
