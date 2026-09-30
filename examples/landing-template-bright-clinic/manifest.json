@@ -1,0 +1,528 @@
+{
+  "type": "landing_template",
+  "name": "Bright Clinic",
+  "version": "2.0.0",
+  "sections": [
+    {
+      "key": "nav",
+      "name": "Top bar with logo and booking button",
+      "template": "sections/nav.html",
+      "styles": "sections/nav.css",
+      "mobile_styles": "sections/nav.mobile.css",
+      "settings": [
+        {
+          "key": "business_name",
+          "type": "text",
+          "label": "Business name",
+          "default": "Bright Clinic"
+        },
+        {
+          "key": "logo",
+          "type": "image",
+          "label": "Logo",
+          "default": "images/logo.svg"
+        },
+        {
+          "key": "links",
+          "type": "list",
+          "label": "Menu links",
+          "default": [
+            {
+              "label": "Services",
+              "link": "#services"
+            },
+            {
+              "label": "About",
+              "link": "#about"
+            },
+            {
+              "label": "Reviews",
+              "link": "#reviews"
+            },
+            {
+              "label": "FAQ",
+              "link": "#faq"
+            },
+            {
+              "label": "Contact",
+              "link": "#contact"
+            }
+          ]
+        },
+        {
+          "key": "cta_label",
+          "type": "text",
+          "label": "Button text",
+          "default": "Book a visit"
+        },
+        {
+          "key": "cta_link",
+          "type": "link",
+          "label": "Button link",
+          "default": "#contact"
+        }
+      ]
+    },
+    {
+      "key": "hero",
+      "name": "Hero with headline, booking button and photo",
+      "template": "sections/hero.html",
+      "styles": "sections/hero.css",
+      "mobile_styles": "sections/hero.mobile.css",
+      "settings": [
+        {
+          "key": "background",
+          "type": "colour",
+          "label": "Background colour",
+          "default": "#F3FAF7"
+        },
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the headline",
+          "default": "Family dental care"
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Headline",
+          "default": "Book your check-up in two minutes"
+        },
+        {
+          "key": "subtitle",
+          "type": "text",
+          "label": "Subheading",
+          "default": "Gentle, modern dentistry in the heart of town. Same-week appointments, clear prices, and a team that explains everything before we start."
+        },
+        {
+          "key": "cta_label",
+          "type": "text",
+          "label": "Main button text",
+          "default": "Book a visit"
+        },
+        {
+          "key": "cta_link",
+          "type": "link",
+          "label": "Main button link",
+          "default": "#contact"
+        },
+        {
+          "key": "secondary_label",
+          "type": "text",
+          "label": "Second button text",
+          "default": "See our services"
+        },
+        {
+          "key": "secondary_link",
+          "type": "link",
+          "label": "Second button link",
+          "default": "#services"
+        },
+        {
+          "key": "badges",
+          "type": "list",
+          "label": "Trust points",
+          "default": [
+            "Open six days a week",
+            "Most insurance accepted",
+            "Free parking"
+          ]
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo",
+          "default": "images/hero.svg"
+        },
+        {
+          "key": "image_alt",
+          "type": "text",
+          "label": "Photo description (for screen readers)",
+          "default": "A friendly dentist talking with a patient"
+        }
+      ]
+    },
+    {
+      "key": "services",
+      "name": "Services with prices",
+      "template": "sections/services.html",
+      "styles": "sections/services.css",
+      "mobile_styles": "sections/services.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "What we do"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "Care for the whole family"
+        },
+        {
+          "key": "intro",
+          "type": "text",
+          "label": "Intro",
+          "default": "Every visit starts with a conversation. You get a clear plan and a price before any treatment."
+        },
+        {
+          "key": "services",
+          "type": "list",
+          "label": "Services",
+          "default": [
+            {
+              "name": "Check-up and clean",
+              "description": "A full exam, a gentle clean and advice you can actually use at home.",
+              "price": "$89",
+              "duration": "45 min"
+            },
+            {
+              "name": "Teeth whitening",
+              "description": "A brighter smile in one visit, with a take-home kit to keep it that way.",
+              "price": "$249",
+              "duration": "60 min"
+            },
+            {
+              "name": "Children's visit",
+              "description": "Short, friendly first visits that help kids feel at home in the chair.",
+              "price": "$59",
+              "duration": "30 min"
+            },
+            {
+              "name": "Fillings",
+              "description": "Tooth-coloured fillings that blend in and last.",
+              "price": "From $120",
+              "duration": "40 min"
+            },
+            {
+              "name": "Emergency appointment",
+              "description": "Toothache or a broken tooth? Call us and we'll see you the same day.",
+              "price": "$95",
+              "duration": "30 min"
+            },
+            {
+              "name": "Invisible aligners",
+              "description": "Straighter teeth without metal braces. Free first consultation.",
+              "price": "From $2,900",
+              "duration": "Consultation 30 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "about",
+      "name": "About with photo and numbers",
+      "template": "sections/about.html",
+      "styles": "sections/about.css",
+      "mobile_styles": "sections/about.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "About us"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "A local practice since 2009"
+        },
+        {
+          "key": "text",
+          "type": "text",
+          "label": "Text",
+          "default": "We are a small team of dentists and hygienists who believe a visit to the dentist should feel calm and unhurried. We take the time to listen, explain your options in plain words, and only recommend what you need."
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo",
+          "default": "images/about.svg"
+        },
+        {
+          "key": "image_alt",
+          "type": "text",
+          "label": "Photo description",
+          "default": "The bright, calm waiting room at the clinic"
+        },
+        {
+          "key": "stats",
+          "type": "list",
+          "label": "Numbers",
+          "default": [
+            {
+              "value": "15+",
+              "label": "Years in town"
+            },
+            {
+              "value": "4,000",
+              "label": "Happy patients"
+            },
+            {
+              "value": "4.9★",
+              "label": "Average rating"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "team",
+      "name": "Meet the team",
+      "template": "sections/team.html",
+      "styles": "sections/team.css",
+      "mobile_styles": "sections/team.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "Our team"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "The people who look after you"
+        },
+        {
+          "key": "team",
+          "type": "list",
+          "label": "Team members",
+          "default": [
+            {
+              "name": "Dr. Sara Malik",
+              "role": "Lead dentist",
+              "initials": "SM"
+            },
+            {
+              "name": "Dr. James Ortega",
+              "role": "Dentist",
+              "initials": "JO"
+            },
+            {
+              "name": "Priya Shah",
+              "role": "Hygienist",
+              "initials": "PS"
+            },
+            {
+              "name": "Tom Becker",
+              "role": "Front desk",
+              "initials": "TB"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "reviews",
+      "name": "Patient reviews",
+      "template": "sections/reviews.html",
+      "styles": "sections/reviews.css",
+      "mobile_styles": "sections/reviews.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "Reviews"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "What our patients say"
+        },
+        {
+          "key": "rating",
+          "type": "text",
+          "label": "Rating line",
+          "default": "Rated 4.9 out of 5 from 320 reviews"
+        },
+        {
+          "key": "reviews",
+          "type": "list",
+          "label": "Reviews",
+          "default": [
+            {
+              "quote": "The first dentist I've not been nervous about. Everything was explained before it happened.",
+              "author": "Nora P."
+            },
+            {
+              "quote": "Booked on Monday, seen on Wednesday. The price was exactly what they told me.",
+              "author": "Sam R."
+            },
+            {
+              "quote": "My kids actually ask when their next visit is. That says it all.",
+              "author": "Lina C."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "faq",
+      "name": "Questions and answers",
+      "template": "sections/faq.html",
+      "styles": "sections/faq.css",
+      "mobile_styles": "sections/faq.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "FAQ"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "Good to know before your visit"
+        },
+        {
+          "key": "questions",
+          "type": "list",
+          "label": "Questions",
+          "default": [
+            {
+              "question": "Do you take my insurance?",
+              "answer": "We work with most major plans. Call us with your plan name and we'll check before you book."
+            },
+            {
+              "question": "How soon can I be seen?",
+              "answer": "Usually within the same week. For pain or a broken tooth we keep same-day slots free."
+            },
+            {
+              "question": "Can I bring my children?",
+              "answer": "Yes. We see children from their first tooth, and short first visits help them feel at ease."
+            },
+            {
+              "question": "How much will it cost?",
+              "answer": "You get a written price before any treatment starts, and there are no surprise extras."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "contact",
+      "name": "Contact, hours and booking",
+      "template": "sections/contact.html",
+      "styles": "sections/contact.css",
+      "mobile_styles": "sections/contact.mobile.css",
+      "settings": [
+        {
+          "key": "eyebrow",
+          "type": "text",
+          "label": "Small line above the heading",
+          "default": "Visit us"
+        },
+        {
+          "key": "heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "Ready when you are"
+        },
+        {
+          "key": "text",
+          "type": "text",
+          "label": "Text",
+          "default": "Book online in two minutes or give us a call. New patients are always welcome."
+        },
+        {
+          "key": "cta_label",
+          "type": "text",
+          "label": "Button text",
+          "default": "Book a visit"
+        },
+        {
+          "key": "cta_link",
+          "type": "link",
+          "label": "Button link",
+          "default": "#contact"
+        },
+        {
+          "key": "address",
+          "type": "text",
+          "label": "Address",
+          "default": "12 Harbour Street, Springfield"
+        },
+        {
+          "key": "phone",
+          "type": "text",
+          "label": "Phone",
+          "default": "+1 555 0142"
+        },
+        {
+          "key": "email",
+          "type": "text",
+          "label": "Email",
+          "default": "hello@brightclinic.example"
+        },
+        {
+          "key": "hours",
+          "type": "list",
+          "label": "Opening hours",
+          "default": [
+            {
+              "days": "Mon – Fri",
+              "time": "8:00 – 18:00"
+            },
+            {
+              "days": "Saturday",
+              "time": "9:00 – 14:00"
+            },
+            {
+              "days": "Sunday",
+              "time": "Closed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "footer",
+      "name": "Footer",
+      "template": "sections/footer.html",
+      "styles": "sections/footer.css",
+      "mobile_styles": "sections/footer.mobile.css",
+      "settings": [
+        {
+          "key": "business_name",
+          "type": "text",
+          "label": "Business name",
+          "default": "Bright Clinic"
+        },
+        {
+          "key": "links",
+          "type": "list",
+          "label": "Links",
+          "default": [
+            {
+              "label": "Privacy",
+              "link": "#"
+            },
+            {
+              "label": "Accessibility",
+              "link": "#"
+            },
+            {
+              "label": "Careers",
+              "link": "#"
+            }
+          ]
+        },
+        {
+          "key": "small_print",
+          "type": "text",
+          "label": "Small print",
+          "default": "© Bright Clinic. All rights reserved."
+        }
+      ]
+    }
+  ]
+}

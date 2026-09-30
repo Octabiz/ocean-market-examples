@@ -1,0 +1,19 @@
+{
+  "type": "store_theme",
+  "name": "Harbor Linen",
+  "version": "2.0.0",
+  "colors": {
+    "background": "#FAF7F2",
+    "surface": "#E8DCC8",
+    "text": "#1F2A2E",
+    "muted": "#4A555C",
+    "accent": "#1F5F6B",
+    "on_accent": "#FFFFFF",
+    "border": "#C9B89C"
+  },
+  "fonts": {
+    "heading": { "family": "Playfair Display", "weight": 600 },
+    "body": { "family": "Inter", "weight": 400 }
+  },
+  "radius": 10
+}

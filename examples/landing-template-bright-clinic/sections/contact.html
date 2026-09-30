@@ -1,0 +1,16 @@
+<section class="bc bc-contact" id="contact">
+  <div class="bc-wrap bc-contact-grid">
+    <div>
+      <span class="bc-eyebrow">{{ eyebrow }}</span>
+      <h2 class="bc-h2">{{ heading }}</h2>
+      <p class="bc-lead">{{ text }}</p>
+      <a class="bc-btn bc-contact-btn" href="{{ cta_link }}">{{ cta_label }}</a>
+    </div>
+    <div class="bc-contact-card">
+      <p><strong>Address</strong><br />{{ address }}</p>
+      <p><strong>Phone</strong><br /><a href="tel:{{ phone }}">{{ phone }}</a></p>
+      <p><strong>Email</strong><br /><a href="mailto:{{ email }}">{{ email }}</a></p>
+      <table class="bc-hours"><caption>Opening hours</caption><tbody>{{#each hours}}<tr><th scope="row">{{ days }}</th><td>{{ time }}</td></tr>{{/each}}</tbody></table>
+    </div>
+  </div>
+</section>

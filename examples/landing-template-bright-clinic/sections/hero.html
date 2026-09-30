@@ -1,0 +1,15 @@
+<section class="bc bc-hero" id="top" style="background: {{ background }}">
+  <div class="bc-wrap bc-hero-grid">
+    <div>
+      <span class="bc-eyebrow">{{ eyebrow }}</span>
+      <h1 class="bc-hero-title">{{ title }}</h1>
+      <p class="bc-lead">{{ subtitle }}</p>
+      <div class="bc-hero-cta">
+        <a class="bc-btn" href="{{ cta_link }}">{{ cta_label }}</a>
+        <a class="bc-btn bc-btn-ghost" href="{{ secondary_link }}">{{ secondary_label }}</a>
+      </div>
+      <ul class="bc-trust">{{#each badges}}<li>{{ this }}</li>{{/each}}</ul>
+    </div>
+    <img class="bc-hero-img" src="{{ image }}" alt="{{ image_alt }}" width="520" height="440" />
+  </div>
+</section>

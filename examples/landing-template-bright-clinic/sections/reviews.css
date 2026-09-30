@@ -1,0 +1,15 @@
+
+/* Brand colour: the business's page theme (--primary is an HSL triple), with a fallback. */
+.bc{--bc-accent:hsl(var(--primary,164 80% 27%));--bc-accent-fg:hsl(var(--primary-foreground,0 0% 100%));--bc-ink:#10231e;--bc-muted:#3c544d;--bc-line:#d5e7e0;--bc-soft:#f3faf7;color:var(--bc-ink);box-sizing:border-box}
+.bc *{box-sizing:border-box}
+.bc-wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.bc-btn{display:inline-block;padding:14px 24px;border-radius:999px;background:var(--bc-accent);color:var(--bc-accent-fg);font-weight:600;text-decoration:none;line-height:1.2}
+.bc-btn-ghost{background:transparent;color:var(--bc-accent);box-shadow:inset 0 0 0 2px var(--bc-accent)}
+.bc-eyebrow{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--bc-accent)}
+.bc-h2{font-size:34px;line-height:1.2;margin:8px 0 12px}
+.bc-lead{font-size:18px;line-height:1.6;color:var(--bc-muted);margin:0}
+.bc-reviews{padding:80px 0;background:var(--bc-soft)}
+.bc-quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;list-style:none;margin:32px 0 0;padding:0}
+.bc-quotes li{padding:24px;border-radius:20px;background:#fff;border:1px solid var(--bc-line)}
+.bc-quotes blockquote{margin:0 0 16px;font-size:17px;line-height:1.6}
+.bc-quotes cite{font-style:normal;font-weight:600;color:var(--bc-muted)}

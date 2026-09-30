@@ -1,0 +1,8 @@
+{
+  "name": "Top Customers",
+  "version": "2.0.0",
+  "type": "embedded_ui",
+  "description": "Rank customers by sales, see how much each has paid, and export the list.",
+  "scopes": ["invoices:read", "ui:embed"],
+  "sensitive_flags": []
+}

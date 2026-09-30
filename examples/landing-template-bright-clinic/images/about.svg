@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" width="480" height="400" role="img" aria-label="Illustration of a calm waiting room">
+  <rect width="480" height="400" rx="28" fill="#FFFFFF"/>
+  <rect x="0" y="280" width="480" height="120" fill="#E3F4EE"/>
+  <rect x="48" y="60" width="150" height="120" rx="12" fill="#BFE3F2"/>
+  <path d="M48 150 l45-40 35 30 30-25 40 35 v30 h-150z" fill="#8CCBB5"/>
+  <circle cx="160" cy="92" r="14" fill="#FFFFFF"/>
+  <rect x="250" y="70" width="170" height="16" rx="8" fill="#E3F4EE"/>
+  <rect x="250" y="100" width="120" height="16" rx="8" fill="#E3F4EE"/>
+  <rect x="70" y="220" width="220" height="60" rx="18" fill="#0E7C66"/>
+  <rect x="70" y="200" width="60" height="40" rx="14" fill="#11967B"/>
+  <rect x="150" y="200" width="60" height="40" rx="14" fill="#11967B"/>
+  <rect x="230" y="200" width="60" height="40" rx="14" fill="#11967B"/>
+  <rect x="340" y="190" width="70" height="90" rx="10" fill="#C7E7DC"/>
+  <path d="M375 190 q-30-60 0-90 q30 30 0 90z" fill="#4FAF8E"/>
+  <path d="M375 190 q-50-30-40-70 q40 10 40 70z" fill="#0E7C66"/>
+</svg>

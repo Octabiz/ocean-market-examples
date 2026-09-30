@@ -1,0 +1,8 @@
+<section class="bc bc-services" id="services">
+  <div class="bc-wrap">
+    <span class="bc-eyebrow">{{ eyebrow }}</span>
+    <h2 class="bc-h2">{{ heading }}</h2>
+    <p class="bc-lead">{{ intro }}</p>
+    <ul class="bc-cards">{{#each services}}<li class="bc-card"><h3>{{ name }}</h3><p>{{ description }}</p><div class="bc-card-foot"><strong>{{ price }}</strong><span>{{ duration }}</span></div></li>{{/each}}</ul>
+  </div>
+</section>

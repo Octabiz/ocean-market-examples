@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mock Octabiz — embedded app dev host</title>
+  <link rel="stylesheet" href="host.css" />
+</head>
+<body>
+  <aside class="side">
+    <div class="brand">Octabiz <span>mock host</span></div>
+    <h2 id="app-name">Your app</h2>
+    <p class="hint">This page plays the part of Octabiz: it frames your app and answers its bridge requests from sample data. Nothing leaves your computer.</p>
+
+    <fieldset>
+      <legend>Granted permissions</legend>
+      <div id="scopes"></div>
+      <p class="hint">Untick one to test what your app shows when a business didn’t allow it.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Business</legend>
+      <label>Currency
+        <select id="currency"><option>USD</option><option>EUR</option><option>GBP</option><option>OMR</option><option>JPY</option></select>
+      </label>
+      <label><input type="checkbox" id="empty" /> Empty business (no customers or invoices)</label>
+      <label><input type="checkbox" id="slow" /> Slow network (1.5 s per request)</label>
+    </fieldset>
+
+    <button id="reload" type="button">Reload app</button>
+
+    <h3>Bridge log</h3>
+    <ol id="log" class="log"></ol>
+  </aside>
+  <main class="main">
+    <div class="frame-head"><span id="frame-title">App</span><code id="frame-url"></code></div>
+    <iframe id="frame" title="Embedded app" sandbox="allow-scripts allow-forms allow-popups allow-same-origin allow-downloads" referrerpolicy="no-referrer"></iframe>
+  </main>
+  <script src="sample-data.js"></script>
+  <script src="host.js"></script>
+</body>
+</html>

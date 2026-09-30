@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Reminders</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="head">
+      <div>
+        <h1>Birthday Reminders</h1>
+        <p id="subtitle" class="muted">Customers with a birthday coming up.</p>
+      </div>
+      <button id="export" class="btn" type="button" disabled>Export CSV</button>
+    </header>
+
+    <div class="toolbar">
+      <label class="field">Show
+        <select id="window">
+          <option value="today">Today</option>
+          <option value="7" selected>Next 7 days</option>
+          <option value="30">Next 30 days</option>
+          <option value="this-month">This month</option>
+          <option value="next-month">Next month</option>
+        </select>
+      </label>
+      <label class="field grow">Search
+        <input id="search" type="search" placeholder="Customer name or email" autocomplete="off" />
+      </label>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite">Connecting to Octabiz…</p>
+    <div id="groups"></div>
+    <p id="missing" class="note" hidden></p>
+    <p class="note">Only the day and month are shown and exported — never a customer’s birth year or age.</p>
+  </main>
+  <script src="octabiz-bridge.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

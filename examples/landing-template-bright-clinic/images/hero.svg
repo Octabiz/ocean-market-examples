@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 440" width="520" height="440" role="img" aria-label="Illustration of a dentist and patient">
+  <rect width="520" height="440" rx="28" fill="#E3F4EE"/>
+  <circle cx="420" cy="90" r="46" fill="#FFFFFF" opacity=".8"/>
+  <rect x="60" y="300" width="400" height="24" rx="12" fill="#C7E7DC"/>
+  <path d="M110 300 q30-120 120-120 h40 q40 0 40 40 v80z" fill="#0E7C66"/>
+  <rect x="150" y="150" width="70" height="90" rx="30" fill="#F6C7A6"/>
+  <circle cx="185" cy="120" r="42" fill="#F6C7A6"/>
+  <path d="M143 112 q42-58 86 0 q-10-40-43-40 q-33 0-43 40z" fill="#3B2B25"/>
+  <rect x="160" y="96" width="50" height="10" rx="5" fill="#FFFFFF" opacity=".9"/>
+  <path d="M300 300 q0-90 70-110 q60 10 60 110z" fill="#FFFFFF"/>
+  <circle cx="365" cy="150" r="38" fill="#E8B08C"/>
+  <path d="M327 144 q38-52 76 0 q-6-34-38-36 q-32 2-38 36z" fill="#2E2A3A"/>
+  <rect x="338" y="162" width="54" height="22" rx="11" fill="#BFE3F2"/>
+  <path d="M270 210 l40 20" stroke="#0E7C66" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="92" cy="96" r="10" fill="#0E7C66" opacity=".35"/>
+  <circle cx="120" cy="60" r="6" fill="#0E7C66" opacity=".25"/>
+</svg>

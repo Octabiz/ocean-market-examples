@@ -1,0 +1,8 @@
+{
+  "name": "Birthday Reminders",
+  "version": "2.0.0",
+  "type": "embedded_ui",
+  "description": "See which customers have a birthday coming up, grouped by today, this week and later.",
+  "scopes": ["customers:read", "ui:embed"],
+  "sensitive_flags": []
+}

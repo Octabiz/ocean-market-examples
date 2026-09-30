@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Top Customers</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="head">
+      <div>
+        <h1>Top Customers</h1>
+        <p id="subtitle" class="muted">Your best customers by sales.</p>
+      </div>
+      <button id="export" class="btn" type="button" disabled>Export CSV</button>
+    </header>
+
+    <section class="cards" aria-label="Summary">
+      <div class="card"><span class="label">Sales</span><strong id="sum-sales">–</strong></div>
+      <div class="card"><span class="label">Paid</span><strong id="sum-paid">–</strong></div>
+      <div class="card"><span class="label">Customers</span><strong id="sum-customers">–</strong></div>
+      <div class="card"><span class="label">Top 10 share</span><strong id="sum-share">–</strong></div>
+    </section>
+
+    <div class="toolbar">
+      <label class="field">Period
+        <select id="period">
+          <option value="30">Last 30 days</option>
+          <option value="90" selected>Last 90 days</option>
+          <option value="365">Last 12 months</option>
+          <option value="all">All time</option>
+        </select>
+      </label>
+      <label class="field grow">Search
+        <input id="search" type="search" placeholder="Customer name" autocomplete="off" />
+      </label>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite">Connecting to Octabiz…</p>
+
+    <div class="table-wrap" id="table-wrap" hidden>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" class="rank">#</th>
+            <th scope="col"><button type="button" class="sort" data-sort="name">Customer</button></th>
+            <th scope="col" class="num"><button type="button" class="sort" data-sort="count">Invoices</button></th>
+            <th scope="col" class="num"><button type="button" class="sort" data-sort="total" aria-sort="descending">Sales</button></th>
+            <th scope="col" class="num hide-sm"><button type="button" class="sort" data-sort="paid">Paid</button></th>
+            <th scope="col" class="hide-sm"><button type="button" class="sort" data-sort="last">Last invoice</button></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="octabiz-bridge.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

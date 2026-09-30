@@ -1,0 +1,33 @@
+/* Birthday Reminders — plain CSS, follows the business's light/dark setting. */
+:root { --bg: #ffffff; --fg: #15192b; --muted: #5d6478; --line: #e4e7ef; --accent: #b8315f; --accent-fg: #ffffff; --soft: #fdeef4; --danger: #b42318; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #141a2e; --fg: #eef0f7; --muted: #a3aac0; --line: #2a3250; --accent: #f28bb0; --accent-fg: #2a0f1b; --soft: #2a1d2c; --danger: #ff8a80; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.app { max-width: 860px; margin: 0 auto; padding: 24px 16px 40px; }
+.head { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+h1 { margin: 0; font-size: 24px; line-height: 1.2; }
+h2 { margin: 24px 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.muted { margin: 4px 0 0; color: var(--muted); }
+.btn { min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); font: inherit; font-weight: 600; cursor: pointer; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.field.grow { flex: 1 1 220px; }
+select, input { min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); font: inherit; }
+.status { color: var(--muted); }
+.status.error { color: var(--danger); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.item { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; }
+.date { flex: 0 0 64px; padding: 6px 0; text-align: center; border-radius: 12px; background: var(--soft); }
+.date b { display: block; font-size: 22px; line-height: 1.1; color: var(--accent); }
+.date span { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.who { flex: 1; min-width: 0; }
+.who strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who small { display: block; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.when { font-weight: 600; white-space: nowrap; }
+.when.today { color: var(--accent); }
+.note { margin-top: 20px; font-size: 13px; color: var(--muted); }

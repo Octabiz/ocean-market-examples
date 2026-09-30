@@ -1,0 +1,11 @@
+<section class="bc bc-about" id="about">
+  <div class="bc-wrap bc-about-grid">
+    <img class="bc-about-img" src="{{ image }}" alt="{{ image_alt }}" width="480" height="400" />
+    <div>
+      <span class="bc-eyebrow">{{ eyebrow }}</span>
+      <h2 class="bc-h2">{{ heading }}</h2>
+      <p class="bc-lead">{{ text }}</p>
+      <dl class="bc-stats">{{#each stats}}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{{/each}}</dl>
+    </div>
+  </div>
+</section>
