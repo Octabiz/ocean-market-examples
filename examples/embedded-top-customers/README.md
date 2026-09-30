@@ -2,6 +2,15 @@
 
 Ranks a business's customers by sales for a chosen period, shows how much each has paid, and exports the list as CSV.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/app-dark.png">
+  <img alt="Top Customers: summary cards for sales, paid, customers and top-10 share above a ranked, sortable customer table with paid-share bars" src="screenshots/app.png" width="100%">
+</picture>
+
+| On a phone | Inside the mock Octabiz (`tools/dev-host.mjs`) |
+| --- | --- |
+| <img alt="Top Customers at phone width: stacked cards and a three-column table" src="screenshots/mobile.png" width="260"> | <img alt="The dev host: permission toggles, currency, empty and slow-network switches and a live bridge log next to the running app" src="screenshots/dev-host.png" width="560"> |
+
 **Permission:** `invoices:read`. Customer names come on each invoice, so the app never needs `customers:read`.
 
 ## What it shows you

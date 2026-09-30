@@ -11,6 +11,8 @@
   var ALL_SCOPES = ['customers:read', 'customers:write', 'invoices:read', 'products:read', 'ui:embed'];
 
   var frame = document.getElementById('frame');
+  var query = new URLSearchParams(location.search);
+  if (query.get('screenshot') === '1') document.body.classList.add('shot');
   var meta = null;
   var appOrigin = null;
   var created = [];
@@ -105,6 +107,7 @@
       l.appendChild(document.createTextNode(' ' + s + ((m.scopes || []).indexOf(s) >= 0 ? '' : '  (not requested)')));
       $('scopes').appendChild(l);
     });
+    if (query.get('currency')) $('currency').value = query.get('currency');
     ['currency', 'empty', 'slow'].forEach(function (id) { $(id).addEventListener('change', load); });
     $('scopes').addEventListener('change', load);
     $('reload').addEventListener('click', load);

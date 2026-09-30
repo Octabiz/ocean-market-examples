@@ -2,6 +2,10 @@
 
 Calm linen tones, a deep teal accent and Playfair Display headings, for home and lifestyle stores.
 
+| On a sample store (`tools/preview.mjs`) | On a phone |
+| --- | --- |
+| <img alt="Harbor Linen applied to a sample store: header, hero, product cards, a booking form and the token swatches" src="screenshots/store.png" width="560"> | <img alt="Harbor Linen at phone width" src="screenshots/mobile.png" width="220"> |
+
 | Token | Value | Used for |
 | --- | --- | --- |
 | background | `#FAF7F2` | Page background |

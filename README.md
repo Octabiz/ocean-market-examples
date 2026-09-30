@@ -2,6 +2,17 @@
 
 Complete, working examples of everything you can build for **Ocean Market**, the Octabiz app store: embedded apps, landing page templates and store themes. Each one is a real listing that went through Octabiz review. Download the repo, run an example on your computer, change it, and submit your own.
 
+<table>
+  <tr>
+    <td width="50%"><a href="examples/embedded-top-customers"><img alt="Top Customers" src="examples/embedded-top-customers/screenshots/app.png"></a><br><b>Top Customers</b> · embedded app</td>
+    <td width="50%"><a href="examples/embedded-birthday-reminders"><img alt="Birthday Reminders" src="examples/embedded-birthday-reminders/screenshots/app.png"></a><br><b>Birthday Reminders</b> · embedded app</td>
+  </tr>
+  <tr>
+    <td><a href="examples/landing-template-bright-clinic"><img alt="Bright Clinic" src="examples/landing-template-bright-clinic/screenshots/hero.png"></a><br><b>Bright Clinic</b> · landing page template</td>
+    <td><a href="examples/store-theme-harbor-linen"><img alt="Harbor Linen" src="examples/store-theme-harbor-linen/screenshots/store.png"></a><br><b>Harbor Linen</b> · store theme</td>
+  </tr>
+</table>
+
 | Example | What it is | What it shows you |
 | --- | --- | --- |
 | [Top Customers](examples/embedded-top-customers) | Embedded app | Reading invoices through the bridge, paging, summary cards, sorting, CSV export, loading, empty and error states |

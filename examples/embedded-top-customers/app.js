@@ -102,7 +102,7 @@
       name.appendChild(strong);
       name.appendChild(bar);
       tr.appendChild(name);
-      tr.appendChild(cell(String(c.count), 'num'));
+      tr.appendChild(cell(String(c.count), 'num hide-xs'));
       tr.appendChild(cell(B.formatMoney(c.total), 'num'));
       tr.appendChild(cell(B.formatMoney(c.paid), 'num hide-sm'));
       tr.appendChild(cell(new Date(c.last).toLocaleDateString(), 'hide-sm'));

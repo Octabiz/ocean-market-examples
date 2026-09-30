@@ -81,6 +81,8 @@ Declare anything sensitive in the portal's **"Does your app do any of these?"** 
 node tools/dev-host.mjs examples/embedded-top-customers
 ```
 
+<img alt="The mock Octabiz dev host running Top Customers" src="../examples/embedded-top-customers/screenshots/dev-host.png" width="100%">
+
 This opens a mock Octabiz at `http://localhost:4400`. It frames your app from a **different origin** (`http://127.0.0.1:4401`), sends the same **Content Security Policy** as production, and answers the bridge from sample data: 40 customers, 220 invoices and a few products. From the sidebar you can:
 
 - untick a permission, to test your "missing permission" message
@@ -88,6 +90,8 @@ This opens a mock Octabiz at `http://localhost:4400`. It frames your app from a 
 - simulate an empty business
 - slow the network down
 - watch every bridge message in the log
+
+**Listing screenshots:** open `http://localhost:4400/?screenshot=1` in a 1280×800 window to get just your app, edge to edge. That's the size the developer portal asks for.
 
 ## Checklist before you submit
 

@@ -2,6 +2,13 @@
 
 Lists customers whose birthday is **today**, **this week** or **later** in the chosen period, so staff can send a note or a small offer on time. It also exports the list as CSV.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/app-dark.png">
+  <img alt="Birthday Reminders: customers grouped under Today and This week, each with a date badge, contact details and how many days until their birthday" src="screenshots/app.png" width="100%">
+</picture>
+
+<p align="center"><img alt="Birthday Reminders at phone width" src="screenshots/mobile.png" width="280"></p>
+
 **Permission:** `customers:read`.
 
 ## What it shows you

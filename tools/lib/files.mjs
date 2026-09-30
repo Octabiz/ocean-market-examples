@@ -2,8 +2,8 @@
 import { readdirSync, statSync, existsSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-/** Files that never go into a package. */
-const SKIP = /(^|\/)(README\.md|\.DS_Store|node_modules|dist|\.git)(\/|$)/;
+/** Files that never go into a package (docs and README screenshots stay in the repo). */
+const SKIP = /(^|\/)(README\.md|\.DS_Store|node_modules|dist|\.git|screenshots)(\/|$)/;
 
 export function listFiles(dir) {
   const out = [];

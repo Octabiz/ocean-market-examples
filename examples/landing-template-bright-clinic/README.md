@@ -2,6 +2,14 @@
 
 A complete landing page for a clinic or practice. It's written for a dental clinic, and every text, picture, colour, link and list can be edited by the business in the page builder.
 
+<img alt="Bright Clinic hero: headline, booking buttons, trust points and an illustration" src="screenshots/hero.png" width="100%">
+
+| The business’s own brand colour | On a phone | The whole page |
+| --- | --- | --- |
+| <img alt="The same template with a purple brand colour" src="screenshots/brand-purple.png" width="380"> | <img alt="Bright Clinic at phone width" src="screenshots/mobile.png" width="180"> | <a href="screenshots/full-page.png"><img alt="All nine sections of the template, top to bottom" src="screenshots/full-page.png" width="160"></a> |
+
+The purple version is the same template with no changes. It follows the page's brand colour (`--primary`), so every business gets its own look.
+
 ## Sections
 
 | Section | Settings a business can edit |

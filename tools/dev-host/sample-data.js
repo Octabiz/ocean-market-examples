@@ -13,7 +13,8 @@
 
   var customers = [];
   for (var i = 0; i < 40; i++) {
-    var name = i === 39 ? '=HYPERLINK("https://example.com")' : pick(FIRST) + ' ' + pick(LAST);
+    // Unique, deterministic names (the last one is a formula-injection test for CSV exports).
+    var name = i === 39 ? '=HYPERLINK("https://example.com")' : FIRST[i % FIRST.length] + ' ' + LAST[(i * 3 + Math.floor(i / FIRST.length)) % LAST.length];
     var dob = null;
     if (i % 2 === 0) {
       // A spread of birthdays around today: today, tomorrow, this week, this month, later, and a few just gone.
@@ -35,16 +36,19 @@
   customers.reverse(); // newest first, like Octabiz
 
   var invoices = [];
+  // Real-looking customers get the spending; the formula-injection test customer gets one small invoice.
+  var tester = customers.filter(function (x) { return x.name.charAt(0) === '='; })[0];
+  var shoppers = customers.filter(function (x) { return x !== tester; });
   for (var n = 0; n < 220; n++) {
-    var c = customers[Math.floor(Math.pow(rnd(), 2) * customers.length)]; // a few big spenders
-    var total = Math.round((20 + rnd() * 900) * 100) / 100;
+    var c = n === 219 ? tester : shoppers[Math.floor(Math.pow(rnd(), 2) * shoppers.length)]; // a few big spenders
+    var total = c === tester ? 19.5 : Math.round((20 + rnd() * 900) * 100) / 100;
     var r = rnd();
     var status = r < 0.08 ? 'draft' : r < 0.2 ? 'sent' : r < 0.3 ? 'partial' : 'paid';
     var paid = status === 'paid' ? total : status === 'partial' ? Math.round(total * 0.5 * 100) / 100 : 0;
-    var when = now - Math.floor(rnd() * 420) * DAY;
+    var when = now - (c === tester ? 3 : Math.floor(rnd() * 420)) * DAY;
     invoices.push({
-      id: 'inv-' + (n + 1), invoice_number: 'INV-' + (1001 + n), customer_id: n % 17 === 0 ? null : c.id,
-      customer_name: n % 17 === 0 ? null : c.name, invoice_date: ymd(when), total: total, amount_paid: paid, status: status, created_at: iso(when)
+      id: 'inv-' + (n + 1), invoice_number: 'INV-' + (1001 + n), customer_id: n % 17 === 0 && c !== tester ? null : c.id,
+      customer_name: n % 17 === 0 && c !== tester ? null : c.name, invoice_date: ymd(when), total: total, amount_paid: paid, status: status, created_at: iso(when)
     });
   }
   invoices.sort(function (a, b) { return b.created_at.localeCompare(a.created_at); });
