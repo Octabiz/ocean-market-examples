@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // Run the same checks Ocean Market runs when you upload, before you upload.
 //   node tools/validate.mjs examples/embedded-top-customers [more folders…]
+// Handles embedded apps, landing page templates, store themes and booking themes.
 // Mirrors the platform rules (see docs/). The platform's result is the one that counts.
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import vm from 'node:vm';
 import { pathToFileURL } from 'node:url';
 import { kindOf, listFiles, readJson } from './lib/files.mjs';
+import { applySettings, CONTRAST_PAIRS, CORNER_SET_NAMES, contrastRatio, isGradient, PAGE_KEYS, parseColor, PRESET_NAMES, resolveTheme, TOKEN_KEYS } from './lib/booking-theme.mjs';
 
 const pass = (label, detail) => ({ status: 'pass', label, detail });
 const warn = (label, detail) => ({ status: 'warn', label, detail });
@@ -147,6 +149,132 @@ function validateTheme(dir) {
   return checks;
 }
 
+// ---------------------------------------------------------------- booking themes
+const BK_TOP = ['$schema', 'name', 'version', 'extends', 'accent', 'tokens', 'fonts', 'corners', 'dark', 'pages', 'settings'];
+const FONT_NAME = /^[A-Za-z0-9][A-Za-z0-9 -]{0,59}$/;
+/** Page data each custom page can print (octabiz.ai/developers/docs/booking-themes). */
+const PAGE_DATA = {
+  hub: ['org', 'services'],
+  service: ['org', 'service', 'timezone', 'error'],
+  details: ['org', 'service', 'hold', 'questions', 'timezone'],
+  confirmed: ['org', 'appointment', 'confirmationMessage', 'calendarLinks'],
+  manage: ['org', 'appointment', 'canChange', 'cutoffText'],
+  change: ['org', 'appointment', 'timezone'],
+  cancel: ['org', 'appointment', 'cancellationMessage', 'refundText'],
+};
+/** What review needs on each custom page (§7.3 of the booking themes spec). */
+const REQUIRED = {
+  timezone: [/data-bk=["']timezone["']/, 'a time zone picker (<select data-bk="timezone">)'],
+  cutoff: [/\{\{\s*(service\.)?cutoffText\s*\}\}/, 'the change/cancel cutoff ({{ service.cutoffText }})'],
+  terms: [/data-bk=["']terms["']/, 'the Terms and Privacy line (data-bk="terms")'],
+  powered: [/data-bk=["']powered-by["']/, '"Powered by Octabiz" (data-bk="powered-by")'],
+};
+const NEEDS = { hub: ['powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
+
+function validateBookingTheme(dir) {
+  const checks = [];
+  let t;
+  try {
+    t = readJson(join(dir, 'theme.json'));
+  } catch (e) {
+    return [fail('theme.json matches the booking theme schema', e.message)];
+  }
+  const errs = [];
+  for (const k of Object.keys(t)) if (!BK_TOP.includes(k)) errs.push(`unknown key "${k}"`);
+  if (!t.name) errs.push('name is required');
+  if (!SEMVER.test(t.version ?? '')) errs.push('version must look like 1.0.0');
+  if (t.extends !== undefined && !PRESET_NAMES.includes(t.extends)) errs.push(`extends must be one of ${PRESET_NAMES.join(', ')}`);
+  for (const [k, v] of Object.entries(t.tokens ?? {})) {
+    if (!TOKEN_KEYS.includes(k)) errs.push(`tokens.${k} isn't a token`);
+    else if (k !== 'shadow' && !(k === 'page' && isGradient(v)) && !parseColor(v)) errs.push(`tokens.${k}: "${v}" isn't a colour we can read (hex, rgb, hsl or oklch)`);
+  }
+  if (typeof t.corners === 'string' && !CORNER_SET_NAMES.includes(t.corners)) errs.push(`corners must be ${CORNER_SET_NAMES.join(', ')} or an object`);
+  if (t.corners && typeof t.corners === 'object') {
+    for (const [k, v] of Object.entries(t.corners)) if (!(parseFloat(v) >= 0 && parseFloat(v) <= 999)) errs.push(`corners.${k} must be 0–999px`);
+  }
+  for (const f of ['heading', 'body']) if (t.fonts?.[f] !== undefined && !FONT_NAME.test(t.fonts[f])) errs.push(`fonts.${f} must be a font family name`);
+  for (const [k, v] of Object.entries(t.pages ?? {})) {
+    if (!PAGE_KEYS.includes(k)) errs.push(`pages.${k} isn't a page you can override`);
+    else if (!/^booking\/[a-z0-9_-]+\.html$/i.test(v)) errs.push(`pages.${k} must be booking/<name>.html`);
+  }
+  for (const st of t.settings ?? []) {
+    if (!/^(accent|corners|fonts\.(heading|body)|tokens\.[A-Za-z]+)$/.test(st.maps ?? '')) errs.push(`settings.${st.id}: maps must be accent, corners, fonts.heading, fonts.body or tokens.<key>`);
+    if (!st.label) errs.push(`settings.${st.id}: add a label — businesses see it when they install`);
+  }
+  checks.push(errs.length ? fail('theme.json matches the booking theme schema', errs.slice(0, 6).join('; ')) : pass('theme.json matches the booking theme schema', `version ${t.version}`));
+  if (errs.length) return checks;
+
+  // An accent setting can't win over primary/soft written out in tokens (later keys win).
+  const shadowed = (t.settings ?? []).filter((st) => st.maps === 'accent' && ['primary', 'soft'].some((k) => t.tokens?.[k] !== undefined));
+  if (shadowed.length) checks.push(warn('Settings change what they say', `"${shadowed[0].label}" maps to accent, but tokens.primary/soft are set too, so it has no effect. Drop them from tokens, or map the setting to tokens.primary.`));
+
+  const resolved = resolveTheme(applySettings(t));
+  for (const [label, fg, bg, min] of CONTRAST_PAIRS) {
+    const a = parseColor(resolved.tokens[fg]);
+    const b = parseColor(resolved.tokens[bg]);
+    if (!a || !b) continue;
+    const ratio = contrastRatio(a, b);
+    checks.push(ratio >= min ? pass(label, `${ratio.toFixed(1)}:1`) : fail(label, `${ratio.toFixed(1)}:1 — needs ${min}:1 or more`));
+  }
+
+  const unlicensed = (t.fonts?.files ?? []).filter((f) => !f.license);
+  checks.push(unlicensed.length ? fail('Fonts are licensed', `add "license" to ${unlicensed.map((f) => f.family).join(', ')}, or use a Google Fonts family`) : pass('Fonts are licensed', `${t.fonts?.heading ?? 'preset'} · ${t.fonts?.body ?? 'preset'}`));
+
+  const files = listFiles(dir);
+  const pages = Object.entries(t.pages ?? {});
+  if (!pages.length) {
+    checks.push(pass('Uses the built-in pages (tokens only)'));
+    return checks;
+  }
+
+  const pageIssues = [];
+  for (const [key, file] of pages) {
+    if (!files.includes(file)) { pageIssues.push(`${file} is missing`); continue; }
+    const html = readFileSync(join(dir, file), 'utf8');
+    for (const need of NEEDS[key]) if (!REQUIRED[need][0].test(html)) pageIssues.push(`${file}: needs ${REQUIRED[need][1]}`);
+    const roots = new Set(PAGE_DATA[key]);
+    const outer = html.replace(/\{\{#each\s+([\w.]+)\s*\}\}[\s\S]*?\{\{\/each\}\}/g, (_m, k) => {
+      if (!roots.has(k.split('.')[0])) pageIssues.push(`${file}: {{#each ${k}}} isn't data this page gets`);
+      return '';
+    });
+    for (const m of outer.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)) if (!roots.has(m[1].split('.')[0])) pageIssues.push(`${file}: {{ ${m[1]} }} isn't data this page gets`);
+  }
+  checks.push(pageIssues.length ? fail('Custom pages have what review needs', pageIssues.slice(0, 5).join('; ')) : pass('Custom pages have what review needs', pages.map(([k]) => k).join(', ')));
+
+  const safety = [];
+  for (const p of files) {
+    if (!/\.(html?|css|js|json|svg|png|jpe?g|webp|woff2?|txt)$/i.test(p)) { safety.push(`${p}: file type isn't allowed`); continue; }
+    if (!/\.(html?|css|js|svg)$/i.test(p)) continue;
+    const text = readFileSync(join(dir, p), 'utf8');
+    if (/\.html?$/i.test(p)) {
+      if (/<script(?![^>]*\bsrc=)[^>]*>\s*\S/i.test(text)) safety.push(`${p}: inline <script> (put code in a .js file in the package)`);
+      for (const m of text.matchAll(/<script[^>]*\bsrc=["']([^"']+)/gi)) if (!files.includes(m[1])) safety.push(`${p}: loads ${m[1]} (only scripts in your package are allowed)`);
+      if (/\son[a-z]+\s*=/i.test(text)) safety.push(`${p}: on…= event attribute (use addEventListener)`);
+      if (/<\s*(iframe|object|embed|base|form)\b/i.test(text)) safety.push(`${p}: <iframe>, <object>, <embed>, <base> and <form> aren't allowed`);
+      for (const m of text.matchAll(/\b(?:src|href)\s*=\s*["']((?:https?:)?\/\/[^"']+)/gi)) safety.push(`${p}: loads ${m[1]} from another site`);
+    }
+    if (/\.js$/i.test(p)) {
+      if (/\b(fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\b/.test(text)) safety.push(`${p}: makes its own network requests (use window.octabizBooking)`);
+      if (/\beval\s*\(|new\s+Function\s*\(|document\.cookie|localStorage|(top|parent)\.location/.test(text)) safety.push(`${p}: uses eval, cookies, storage or moves the page`);
+      try { new vm.Script(text, { filename: p }); } catch (e) { safety.push(`${p}: ${e.message}`); }
+    }
+    if (/\.css$/i.test(p) && /@import|url\s*\(\s*["']?(https?:)?\/\//i.test(text)) safety.push(`${p}: loads CSS or images from another site`);
+  }
+  checks.push(safety.length ? fail('No outside calls, inline scripts or event attributes', safety.slice(0, 5).join('; ')) : pass('No outside calls, inline scripts or event attributes'));
+
+  const radius = [];
+  for (const p of files.filter((f) => f.endsWith('.css'))) {
+    for (const m of readFileSync(join(dir, p), 'utf8').matchAll(/border-radius\s*:\s*([^;}]+)/gi)) {
+      if (!/var\(--bk-r/.test(m[1]) && !/^\s*0(px)?\s*$/.test(m[1])) radius.push(`${p}: border-radius ${m[1].trim()}`);
+    }
+  }
+  checks.push(radius.length ? warn('Corners follow the corner tokens', `${radius.slice(0, 3).join('; ')} ignores the business's corner choice`) : pass('Corners follow the corner tokens'));
+
+  const size = files.reduce((n, p) => n + statSync(join(dir, p)).size, 0);
+  checks.push(size <= 5 * 1024 * 1024 ? pass('Package size', `${(size / 1024).toFixed(1)} KB`) : fail('Package size', 'over 5 MB'));
+  return checks;
+}
+
 // ---------------------------------------------------------------- embedded apps
 const MALWARE = [
   [/coinhive|cryptonight|coin-hive|stratum\+tcp|minero\.cc|webminerpool/i, 'crypto-miner code', 'fail'],
@@ -211,7 +339,10 @@ function validateApp(dir) {
 
 export function validate(dir) {
   const kind = kindOf(dir);
-  const checks = kind === 'template' ? validateTemplate(dir) : kind === 'theme' ? validateTheme(dir) : validateApp(dir);
+  const checks = kind === 'template' ? validateTemplate(dir)
+    : kind === 'theme' ? validateTheme(dir)
+    : kind === 'booking_theme' ? validateBookingTheme(dir)
+    : validateApp(dir);
   return { kind, checks, ok: checks.every((c) => c.status !== 'fail') };
 }
 

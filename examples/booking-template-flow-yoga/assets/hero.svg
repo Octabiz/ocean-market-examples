@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="A person in a seated yoga pose by a window">
+  <rect width="480" height="360" fill="#e3efe6"/>
+  <rect x="300" y="40" width="140" height="190" rx="10" fill="#f8fbf6" stroke="#cfdccb" stroke-width="4"/>
+  <path d="M370 40v190M300 135h140" stroke="#cfdccb" stroke-width="4"/>
+  <circle cx="92" cy="86" r="44" fill="#f4d9b8" opacity=".7"/>
+  <ellipse cx="200" cy="318" rx="150" ry="18" fill="#c9dccb"/>
+  <path d="M120 300c30-46 130-46 160 0z" fill="#2f6b4f"/>
+  <path d="M200 262c-22 0-38-26-36-62l4-46c2-20 62-20 64 0l4 46c2 36-14 62-36 62z" fill="#3f8463"/>
+  <circle cx="200" cy="128" r="24" fill="#f1c9a3"/>
+  <path d="M176 120c4-22 44-26 50 0-14-8-34-8-50 0z" fill="#1d2a22"/>
+  <path d="M168 190c-28 18-48 44-40 62M232 190c28 18 48 44 40 62" stroke="#f1c9a3" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M60 300c10-40 40-60 40-100M80 300c0-30 30-40 26-80" stroke="#2f6b4f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="96" cy="210" rx="14" ry="26" fill="#3f8463" transform="rotate(20 96 210)"/>
+  <ellipse cx="110" cy="244" rx="12" ry="22" fill="#2f6b4f" transform="rotate(-25 110 244)"/>
+</svg>
