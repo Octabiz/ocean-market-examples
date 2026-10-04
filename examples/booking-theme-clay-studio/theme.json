@@ -1,0 +1,52 @@
+{
+  "$schema": "https://octabiz.ai/schemas/booking-theme.v1.json",
+  "name": "Clay Studio",
+  "version": "1.0.0",
+  "extends": "studio",
+  "accent": "#a94a22",
+  "tokens": {
+    "page": "linear-gradient(170deg,#f6efe6,#efe4d6)",
+    "surface": "#fffaf4",
+    "ink": "#2b211b",
+    "muted": "#6a5a4e",
+    "line": "#e8dccd",
+    "cta": "#2b211b",
+    "onCta": "#fffaf4",
+    "shadow": "0 30px 60px -44px rgba(70,40,20,.45)"
+  },
+  "fonts": {
+    "heading": "Fraunces",
+    "body": "DM Sans"
+  },
+  "corners": "soft",
+  "dark": false,
+  "settings": [
+    {
+      "id": "accent",
+      "type": "color",
+      "label": "Accent",
+      "default": "#a94a22",
+      "maps": "accent"
+    },
+    {
+      "id": "shape",
+      "type": "select",
+      "label": "Corners",
+      "options": [
+        "square",
+        "soft",
+        "round",
+        "circle"
+      ],
+      "default": "soft",
+      "maps": "corners"
+    },
+    {
+      "id": "heading",
+      "type": "font",
+      "label": "Heading font",
+      "default": "Fraunces",
+      "maps": "fonts.heading"
+    }
+  ]
+}

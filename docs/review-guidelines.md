@@ -21,6 +21,11 @@ Every new app and every new version is reviewed by a person at Octabiz before bu
 - Text is readable (contrast) and nothing is broken or empty.
 - Placeholder copy (“Lorem ipsum”, “Click here”) has been replaced with real sample content a business could keep.
 
+**Booking themes**
+- Every booking screen reads well in the theme and in each `settings` default: service page, details, booked, manage, change and cancel, plus the error states.
+- The automatic checks pass: the schema, a higher version, five contrast pairs, licensed fonts, and the package size (5 MB).
+- **Your own pages:** the time zone picker, the cutoff line, the Terms line and "Powered by Octabiz" are there; open times come only from `window.octabizBooking`; no inline scripts, other sites or network calls; corners use the `--bk-r*` tokens; tap targets are at least 44px on phones.
+
 ## Real review notes from these examples
 
 | Example | Sent back because | How it was fixed |

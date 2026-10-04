@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Build the file you upload in the Ocean Market developer portal.
 //   node tools/pack.mjs examples/landing-template-bright-clinic
-// Templates and embedded apps → dist/<name>-<version>.zip · themes → dist/<name>-<version>.theme.json
+// Templates, embedded apps and booking themes with their own pages → dist/<name>-<version>.zip
+// Store themes → dist/<name>-<version>.theme.json · tokens-only booking themes → dist/<name>-<version>.booking-theme.json
 import { mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createZip } from './lib/zip.mjs';
@@ -25,11 +26,17 @@ for (const dir of dirs) {
   }
   const kind = kindOf(dir);
   const version = kind === 'template' ? readJson(join(dir, 'manifest.json')).version
-    : kind === 'theme' ? readJson(join(dir, 'theme.json')).version ?? '1.0.0'
+    : kind === 'theme' || kind === 'booking_theme' ? readJson(join(dir, 'theme.json')).version ?? '1.0.0'
     : (readJson(join(dir, 'app.json')).version);
   const name = slugOf(dir);
   if (kind === 'theme') {
     const out = join(dist, `${name}-${version}.theme.json`);
+    copyFileSync(join(dir, 'theme.json'), out);
+    console.log(`✓ ${out}`);
+    continue;
+  }
+  if (kind === 'booking_theme' && listFiles(dir).length === 1) {
+    const out = join(dist, `${name}-${version}.booking-theme.json`);
     copyFileSync(join(dir, 'theme.json'), out);
     console.log(`✓ ${out}`);
     continue;

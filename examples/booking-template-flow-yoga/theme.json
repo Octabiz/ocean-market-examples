@@ -1,0 +1,31 @@
+{
+  "$schema": "https://octabiz.ai/schemas/booking-theme.v1.json",
+  "name": "Flow Yoga",
+  "version": "1.0.0",
+  "extends": "octabiz",
+  "tokens": {
+    "page": "#f2f5ef",
+    "surface": "#ffffff",
+    "ink": "#1d2a22",
+    "muted": "#56645a",
+    "line": "#dfe7da",
+    "primary": "#2f6b4f",
+    "onPrimary": "#ffffff",
+    "soft": "#e3efe6",
+    "cta": "#1d2a22",
+    "onCta": "#ffffff",
+    "shadow": "0 30px 70px -48px rgba(29,42,34,.5)"
+  },
+  "fonts": {
+    "heading": "Fraunces",
+    "body": "Manrope"
+  },
+  "corners": "round",
+  "pages": {
+    "service": "booking/service.html"
+  },
+  "settings": [
+    { "id": "accent", "type": "color", "label": "Accent", "default": "#2f6b4f", "maps": "tokens.primary" },
+    { "id": "shape", "type": "select", "label": "Corners", "options": ["soft", "round", "circle"], "default": "round", "maps": "corners" }
+  ]
+}

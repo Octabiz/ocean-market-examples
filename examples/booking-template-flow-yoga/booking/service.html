@@ -1,0 +1,68 @@
+<!--
+  Flow Yoga: replaces the built-in "Pick a date & time" page (/book/:service) with a landing page.
+  Octabiz renders this inside the booking root, so every var(--bk-*) token works here.
+  Double braces print page data (HTML-escaped) and an "each" block repeats a list. No inline
+  scripts: behaviour lives in booking/service.js, which only talks to window.octabizBooking.
+-->
+<link rel="stylesheet" href="booking/service.css">
+
+<div class="fy" data-service-id="{{ service.id }}">
+  <header class="fy-top">
+    <span class="fy-logo" aria-hidden="true">{{ org.initial }}</span>
+    <span class="fy-org">{{ org.name }}</span>
+    <a class="fy-top-cta" href="#times">Book a class</a>
+  </header>
+
+  <section class="fy-hero">
+    <div class="fy-hero-text">
+      <p class="fy-eyebrow">{{ service.durationMin }} min · {{ service.location.label }} · {{ service.priceText }}</p>
+      <h1 class="fy-title">{{ service.name }}</h1>
+      <p class="fy-lead">{{ service.description }}</p>
+      <div class="fy-hero-actions">
+        <a class="fy-btn" href="#times">See open times</a>
+        <span class="fy-host">with {{ service.host.name }}</span>
+      </div>
+    </div>
+    <img class="fy-hero-art" src="assets/hero.svg" alt="" width="480" height="360">
+  </section>
+
+  <section class="fy-cover" aria-labelledby="fy-cover-h">
+    <h2 id="fy-cover-h" class="fy-h2">What we'll cover</h2>
+    <ul class="fy-list">
+      {{#each service.highlights}}<li><span class="fy-dot" aria-hidden="true"></span>{{ this }}</li>{{/each}}
+    </ul>
+  </section>
+
+  <section id="times" class="fy-times" aria-labelledby="fy-times-h">
+    <div class="fy-times-head">
+      <h2 id="fy-times-h" class="fy-h2">Pick a time</h2>
+      <label class="fy-tz">
+        <span>Time zone</span>
+        <!-- Required on any page that lists times. Octabiz fills the options. -->
+        <select data-bk="timezone"></select>
+      </label>
+    </div>
+
+    <p class="fy-notice" role="alert" data-fy="error" hidden></p>
+
+    <div class="fy-days" role="listbox" aria-label="Days with open times" data-fy="days">
+      <span class="fy-loading">Finding open days…</span>
+    </div>
+    <div class="fy-slots" data-fy="slots" aria-live="polite"></div>
+
+    <div class="fy-continue" data-fy="continue" hidden>
+      <span data-fy="picked"></span>
+      <button type="button" class="fy-btn" data-fy="next">Continue</button>
+    </div>
+
+    <!-- Required before the customer books. -->
+    <p class="fy-fine">{{ service.cutoffText }}</p>
+  </section>
+
+  <footer class="fy-foot">
+    <!-- Required: Octabiz fills this with "Powered by Octabiz", or hides it on plans that remove it. -->
+    <p data-bk="powered-by"></p>
+  </footer>
+</div>
+
+<script src="booking/service.js"></script>

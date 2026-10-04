@@ -18,7 +18,7 @@ const copy = (name) => {
 const failed = (r) => r.checks.filter((c) => c.status === 'fail').map((c) => c.label);
 
 test('every example passes', () => {
-  for (const name of ['embedded-top-customers', 'embedded-birthday-reminders', 'landing-template-bright-clinic', 'store-theme-harbor-linen']) {
+  for (const name of ['embedded-top-customers', 'embedded-birthday-reminders', 'landing-template-bright-clinic', 'store-theme-harbor-linen', 'booking-theme-clay-studio', 'booking-template-flow-yoga']) {
     const r = validate(join(EX, name));
     assert.equal(r.ok, true, `${name}: ${failed(r).join(', ')}`);
   }
@@ -44,6 +44,42 @@ test('themes: low contrast and unknown fonts fail', () => {
   t.fonts.body.family = 'Comic Sans';
   writeFileSync(join(dir, 'theme.json'), JSON.stringify(t));
   assert.deepEqual(failed(validate(dir)), ['Matches theme schema']);
+  rmSync(dir, { recursive: true });
+});
+
+test('booking themes: detected by kind, and contrast, schema and shadowed settings are caught', () => {
+  const dir = copy('booking-theme-clay-studio');
+  assert.equal(validate(dir).kind, 'booking_theme');
+  const t = JSON.parse(readFileSync(join(dir, 'theme.json'), 'utf8'));
+  t.tokens.onCta = '#3a2e26';
+  writeFileSync(join(dir, 'theme.json'), JSON.stringify(t));
+  assert.deepEqual(failed(validate(dir)), ['Text on the main button']);
+  t.tokens.onCta = '#fffaf4';
+  t.tokens.primary = '#a94a22';
+  writeFileSync(join(dir, 'theme.json'), JSON.stringify(t));
+  const r = validate(dir);
+  assert.equal(r.ok, true);
+  assert.ok(r.checks.some((c) => c.status === 'warn' && c.label === 'Settings change what they say'));
+  t.extends = 'sunset';
+  t.tokens.brand = '#fff';
+  writeFileSync(join(dir, 'theme.json'), JSON.stringify(t));
+  assert.deepEqual(failed(validate(dir)), ['theme.json matches the booking theme schema']);
+  rmSync(dir, { recursive: true });
+});
+
+test('booking pages: missing required elements, inline scripts, outside calls and unknown data fail', () => {
+  const dir = copy('booking-template-flow-yoga');
+  const page = join(dir, 'booking/service.html');
+  writeFileSync(page, readFileSync(page, 'utf8').replace('data-bk="timezone"', '').replace('</footer>', '<script>alert(1)</script><img src="https://evil.example/x.png">{{ secrets.key }}</footer>'));
+  writeFileSync(join(dir, 'booking/service.js'), readFileSync(join(dir, 'booking/service.js'), 'utf8') + '\nfetch("https://evil.example");');
+  const r = validate(dir);
+  const pages = r.checks.find((c) => c.label === 'Custom pages have what review needs');
+  assert.equal(pages.status, 'fail');
+  assert.match(pages.detail, /time zone picker/);
+  assert.match(pages.detail, /secrets\.key/);
+  const safety = r.checks.find((c) => c.label === 'No outside calls, inline scripts or event attributes');
+  assert.equal(safety.status, 'fail');
+  assert.match(safety.detail, /inline <script>/);
   rmSync(dir, { recursive: true });
 });
 

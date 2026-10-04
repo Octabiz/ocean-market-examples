@@ -3,6 +3,8 @@
 //   node tools/preview.mjs examples/landing-template-bright-clinic [--primary=#7C3AED] [--port=4300]
 //   (or open http://localhost:4300/?primary=%237C3AED to try a colour without restarting)
 //   node tools/preview.mjs examples/store-theme-harbor-linen
+//   node tools/preview.mjs examples/booking-theme-clay-studio      (built-in booking pages in your tokens)
+//   node tools/preview.mjs examples/booking-template-flow-yoga     (your own booking page + a mock booking SDK)
 // Templates render every section with its default settings, exactly like the page builder;
 // --primary shows how the template follows a business's own brand colour.
 import { readFileSync, existsSync } from 'node:fs';
@@ -10,6 +12,11 @@ import { join, resolve } from 'node:path';
 import { kindOf, readJson } from './lib/files.mjs';
 import { renderTemplate, hexToHslTriple } from './lib/render.mjs';
 import { serve } from './lib/serve.mjs';
+import { bookingPreviewPage } from './lib/booking-preview.mjs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const bookingHost = join(dirname(fileURLToPath(import.meta.url)), 'booking-host');
 
 const args = process.argv.slice(2);
 const dir = resolve(args.find((a) => !a.startsWith('--')) ?? '');
@@ -88,5 +95,17 @@ footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted)}
 </body></html>`;
 }
 
-serve({ root: dir, port, routes: { '/': (url) => (kind === 'template' ? templatePage(url) : kind === 'theme' ? themePage() : '<p>Use tools/dev-host.mjs for embedded apps.</p>') } });
+serve({
+  root: dir,
+  port,
+  routes: {
+    '/': (url) =>
+      kind === 'template' ? templatePage(url)
+      : kind === 'theme' ? themePage()
+      : kind === 'booking_theme' ? bookingPreviewPage(dir, url)
+      : '<p>Use tools/dev-host.mjs for embedded apps.</p>',
+    '/__booking/builtin.css': () => readFileSync(join(bookingHost, 'builtin.css')),
+    '/__booking/octabiz-booking-mock.js': () => readFileSync(join(bookingHost, 'octabiz-booking-mock.js')),
+  },
+});
 console.log(`Previewing ${kind} ${dir}\n→ http://localhost:${port}/   (Ctrl+C to stop)`);
