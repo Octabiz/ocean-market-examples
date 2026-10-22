@@ -150,13 +150,14 @@ function validateTheme(dir) {
 }
 
 // ---------------------------------------------------------------- booking themes
-const BK_TOP = ['$schema', 'name', 'version', 'extends', 'accent', 'tokens', 'fonts', 'corners', 'dark', 'pages', 'settings'];
+const BK_TOP = ['$schema', 'name', 'version', 'extends', 'accent', 'tokens', 'fonts', 'corners', 'dark', 'pages', 'settings', 'fields', 'serviceKinds'];
 const FONT_NAME = /^[A-Za-z0-9][A-Za-z0-9 -]{0,59}$/;
 /** Page data each custom page can print (octabiz.ai/developers/docs/booking-themes). */
 const PAGE_DATA = {
   hub: ['org', 'services'],
   service: ['org', 'service', 'timezone', 'error'],
-  details: ['org', 'service', 'hold', 'questions', 'timezone'],
+  details: ['org', 'service', 'hold', 'questions', 'fields', 'timezone'],
+  book: ['org', 'service', 'fields', 'timezone', 'error'],
   confirmed: ['org', 'appointment', 'confirmationMessage', 'calendarLinks'],
   manage: ['org', 'appointment', 'canChange', 'cutoffText'],
   change: ['org', 'appointment', 'timezone'],
@@ -168,8 +169,101 @@ const REQUIRED = {
   cutoff: [/\{\{\s*(service\.)?cutoffText\s*\}\}/, 'the change/cancel cutoff ({{ service.cutoffText }})'],
   terms: [/data-bk=["']terms["']/, 'the Terms and Privacy line (data-bk="terms")'],
   powered: [/data-bk=["']powered-by["']/, '"Powered by Octabiz" (data-bk="powered-by")'],
+  payment: [/data-bk=["']payment["']/, 'the payment frame (data-bk="payment")'],
 };
-const NEEDS = { hub: ['powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
+const NEEDS = { hub: ['powered'], book: ['timezone', 'cutoff', 'payment', 'terms', 'powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
+
+const FIELD_TYPES = ['text', 'textarea', 'email', 'phone', 'url', 'number', 'select', 'multiselect', 'checkbox', 'date'];
+const FIELD_KEYS = ['id', 'type', 'label', 'help', 'required', 'placeholder', 'options', 'display', 'min', 'max', 'step', 'unit', 'maxLength', 'dates', 'sensitive', 'appliesTo'];
+const RESERVED_FIELDS = ['name', 'email', 'phone', 'notes', 'guests', 'address'];
+
+/** fields: questions a theme adds to the booking form (docs/booking-themes.md → Custom fields). */
+function fieldErrors(t) {
+  const errs = [];
+  const list = t.fields ?? [];
+  if (!Array.isArray(list)) return ['fields must be a list'];
+  if (list.length > 20) errs.push('fields: up to 20');
+  const kindIds = (t.serviceKinds ?? []).map((k) => k.id);
+  const seen = new Set();
+  for (const f of list) {
+    const at = `fields.${f.id ?? '?'}`;
+    for (const k of Object.keys(f)) if (!FIELD_KEYS.includes(k)) errs.push(`${at}: unknown key "${k}"`);
+    if (!/^[a-z][a-z0-9_]{0,31}$/.test(f.id ?? '')) errs.push(`${at}: id must be a-z, 0-9 and _, up to 32 characters`);
+    else if (RESERVED_FIELDS.includes(f.id)) errs.push(`${at}: "${f.id}" is a built-in field, pick another id`);
+    else if (seen.has(f.id)) errs.push(`${at}: id used twice`);
+    seen.add(f.id);
+    if (!FIELD_TYPES.includes(f.type)) errs.push(`${at}: type must be one of ${FIELD_TYPES.join(', ')}`);
+    if (!f.label || f.label.length > 80) errs.push(`${at}: label is required, up to 80 characters`);
+    if (f.help && f.help.length > 160) errs.push(`${at}: help is up to 160 characters`);
+    if (['select', 'multiselect'].includes(f.type)) {
+      if (!Array.isArray(f.options) || !f.options.length || f.options.length > 30) errs.push(`${at}: options needs 1–30 choices`);
+      else if (f.options.some((o) => typeof o !== 'string' || !o || o.length > 60)) errs.push(`${at}: each option is text up to 60 characters`);
+    } else if (f.options) errs.push(`${at}: options only go on select and multiselect`);
+    if (f.display && !(['select', 'multiselect'].includes(f.type) && ['chips', 'list'].includes(f.display))) errs.push(`${at}: display is chips or list, on select and multiselect`);
+    if (f.type === 'number' && f.min != null && f.max != null && f.min > f.max) errs.push(`${at}: min is above max`);
+    if (f.maxLength != null && !(f.maxLength > 0 && f.maxLength <= (f.type === 'textarea' ? 2000 : 200))) errs.push(`${at}: maxLength is up to ${f.type === 'textarea' ? 2000 : 200}`);
+    if (f.dates && !(f.type === 'date' && ['past', 'future'].includes(f.dates))) errs.push(`${at}: dates is past or future, on date fields`);
+    for (const k of f.appliesTo ?? []) if (!kindIds.includes(k)) errs.push(`${at}: appliesTo "${k}" isn't one of your serviceKinds`);
+  }
+  return errs;
+}
+
+const KIND_KEYS = ['id', 'name', 'description', 'icon', 'time', 'capacity', 'pricing', 'settings', 'page', 'example'];
+const SETTING_TYPES = ['number', 'money', 'select', 'text', 'checkbox'];
+const SETTING_MAPS = ['capacity.total', 'capacity.maxPerBooking', 'time.minutes'];
+
+/** serviceKinds: new kinds of booking built from the engine's blocks (docs → New service kinds). */
+function kindErrors(t) {
+  const errs = [];
+  const list = t.serviceKinds ?? [];
+  if (!Array.isArray(list)) return ['serviceKinds must be a list'];
+  if (list.length > 5) errs.push('serviceKinds: up to 5');
+  const fields = new Map((t.fields ?? []).map((f) => [f.id, f]));
+  for (const k of list) {
+    const at = `serviceKinds.${k.id ?? '?'}`;
+    for (const key of Object.keys(k)) if (!KIND_KEYS.includes(key)) errs.push(`${at}: unknown key "${key}"`);
+    if (!/^[a-z][a-z0-9_]{0,31}$/.test(k.id ?? '')) errs.push(`${at}: id must be a-z, 0-9 and _`);
+    if (!k.name) errs.push(`${at}: name is required`);
+    if (k.icon && !/^[a-z0-9-]+$/.test(k.icon)) errs.push(`${at}: icon is a Lucide icon name`);
+    const settings = new Map((k.settings ?? []).map((st) => [st.id, st]));
+    for (const st of k.settings ?? []) {
+      if (!/^[a-z][a-z0-9_]{0,31}$/.test(st.id ?? '')) errs.push(`${at}.settings: id must be a-z, 0-9 and _`);
+      if (!SETTING_TYPES.includes(st.type)) errs.push(`${at}.settings.${st.id}: type must be ${SETTING_TYPES.join(', ')}`);
+      if (!st.label) errs.push(`${at}.settings.${st.id}: add a label, businesses see it`);
+      if (st.maps && !SETTING_MAPS.includes(st.maps)) errs.push(`${at}.settings.${st.id}: maps must be ${SETTING_MAPS.join(', ')}`);
+    }
+    const mapsTo = (m) => (k.settings ?? []).some((st) => st.maps === m);
+    const time = k.time ?? {};
+    if (time.mode === 'fixed') { if (!mapsTo('time.minutes') && !(time.minutes > 0)) errs.push(`${at}.time: fixed needs minutes, or a setting that maps to time.minutes`); }
+    else if (time.mode === 'choice') { if (!Array.isArray(time.options) || !time.options.length || time.options.some((m) => !(m >= 5 && m <= 1440))) errs.push(`${at}.time: choice needs options in minutes (5–1440)`); }
+    else if (time.mode === 'range') {
+      const { minMinutes: lo, maxMinutes: hi, stepMinutes: step } = time;
+      if (!(lo >= 5 && hi <= 1440 && lo < hi && step >= 5 && (hi - lo) % step === 0)) errs.push(`${at}.time: range needs minMinutes < maxMinutes (up to 1440) and a stepMinutes that divides the gap`);
+    } else errs.push(`${at}.time.mode must be fixed, choice or range`);
+    const cap = k.capacity ?? {};
+    if (!['one', 'seats', 'units'].includes(cap.mode)) errs.push(`${at}.capacity.mode must be one, seats or units`);
+    else if (cap.mode !== 'one') {
+      if (!mapsTo('capacity.total') && !(cap.total > 0)) errs.push(`${at}.capacity: ${cap.mode} needs a total, or a setting that maps to capacity.total`);
+      if (cap.mode === 'units' && !cap.unitLabel) errs.push(`${at}.capacity: units needs a unitLabel (for example "kayak")`);
+    }
+    const pr = k.pricing ?? {};
+    const ref = (r) => typeof r === 'string' && r.startsWith('settings.') && settings.get(r.slice(9))?.type === 'money';
+    if (!Array.isArray(pr.per) || !pr.per.length || pr.per.some((p) => !['booking', 'person', 'unit', 'hour'].includes(p))) errs.push(`${at}.pricing.per: any of booking, person, unit, hour`);
+    if (pr.per?.includes('unit') && cap.mode !== 'units') errs.push(`${at}.pricing: per unit needs capacity.mode units`);
+    if (pr.per?.includes('hour') && time.mode === 'fixed') errs.push(`${at}.pricing: per hour needs a choice or range of times`);
+    if (!ref(pr.rate)) errs.push(`${at}.pricing.rate must be settings.<id> of a money setting`);
+    for (const a of pr.addOns ?? []) {
+      const f = fields.get(a.field);
+      if (!f || !['number', 'checkbox'].includes(f.type)) errs.push(`${at}.pricing.addOns: "${a.field}" must be a number or checkbox field`);
+      else if (f.appliesTo && !f.appliesTo.includes(k.id)) errs.push(`${at}.pricing.addOns: "${a.field}" doesn't apply to this kind`);
+      if (!ref(a.each)) errs.push(`${at}.pricing.addOns.${a.field}: each must be settings.<id> of a money setting`);
+      if (!a.label) errs.push(`${at}.pricing.addOns.${a.field}: add a label, customers see it`);
+    }
+    if (!k.page) errs.push(`${at}: page is required (booking/<name>.html)`);
+    else if (!/^booking\/[a-z0-9_-]+\.html$/i.test(k.page)) errs.push(`${at}.page must be booking/<name>.html`);
+  }
+  return errs;
+}
 
 function validateBookingTheme(dir) {
   const checks = [];
@@ -201,12 +295,16 @@ function validateBookingTheme(dir) {
     if (!/^(accent|corners|fonts\.(heading|body)|tokens\.[A-Za-z]+)$/.test(st.maps ?? '')) errs.push(`settings.${st.id}: maps must be accent, corners, fonts.heading, fonts.body or tokens.<key>`);
     if (!st.label) errs.push(`settings.${st.id}: add a label — businesses see it when they install`);
   }
+  errs.push(...fieldErrors(t), ...kindErrors(t));
   checks.push(errs.length ? fail('theme.json matches the booking theme schema', errs.slice(0, 6).join('; ')) : pass('theme.json matches the booking theme schema', `version ${t.version}`));
   if (errs.length) return checks;
 
   // An accent setting can't win over primary/soft written out in tokens (later keys win).
   const shadowed = (t.settings ?? []).filter((st) => st.maps === 'accent' && ['primary', 'soft'].some((k) => t.tokens?.[k] !== undefined));
   if (shadowed.length) checks.push(warn('Settings change what they say', `"${shadowed[0].label}" maps to accent, but tokens.primary/soft are set too, so it has no effect. Drop them from tokens, or map the setting to tokens.primary.`));
+
+  if (t.pages?.book && (t.pages.service || t.pages.details)) checks.push(warn('Pages Octabiz will use', 'pages.book replaces service and details, so those two pages are never shown. Remove them.'));
+  if (t.fields?.length || t.serviceKinds?.length || t.pages?.book) checks.push(warn('Preview contract', 'book, fields and serviceKinds work in these tools, but the developer portal doesn\'t accept them yet.'));
 
   const resolved = resolveTheme(applySettings(t));
   for (const [label, fg, bg, min] of CONTRAST_PAIRS) {
@@ -221,7 +319,7 @@ function validateBookingTheme(dir) {
   checks.push(unlicensed.length ? fail('Fonts are licensed', `add "license" to ${unlicensed.map((f) => f.family).join(', ')}, or use a Google Fonts family`) : pass('Fonts are licensed', `${t.fonts?.heading ?? 'preset'} · ${t.fonts?.body ?? 'preset'}`));
 
   const files = listFiles(dir);
-  const pages = Object.entries(t.pages ?? {});
+  const pages = [...Object.entries(t.pages ?? {}), ...(t.serviceKinds ?? []).filter((k) => k.page).map((k) => ['book', k.page])];
   if (!pages.length) {
     checks.push(pass('Uses the built-in pages (tokens only)'));
     return checks;
@@ -239,7 +337,7 @@ function validateBookingTheme(dir) {
     });
     for (const m of outer.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)) if (!roots.has(m[1].split('.')[0])) pageIssues.push(`${file}: {{ ${m[1]} }} isn't data this page gets`);
   }
-  checks.push(pageIssues.length ? fail('Custom pages have what review needs', pageIssues.slice(0, 5).join('; ')) : pass('Custom pages have what review needs', pages.map(([k]) => k).join(', ')));
+  checks.push(pageIssues.length ? fail('Custom pages have what review needs', pageIssues.slice(0, 5).join('; ')) : pass('Custom pages have what review needs', pages.map(([k, f]) => (k === 'book' ? f.replace('booking/', '') : k)).join(', ')));
 
   const safety = [];
   for (const p of files) {

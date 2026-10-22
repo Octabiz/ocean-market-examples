@@ -1,0 +1,125 @@
+/* Northline: an editorial page that sells the call first, with the whole booking beside it.
+   Every colour and corner comes from var(--bk-*), so the business's Accent and Corners still apply. */
+.nl {
+  min-height: 100vh;
+  background: var(--bk-page);
+  color: var(--bk-ink);
+  font: 16px/1.6 var(--bk-body), system-ui, sans-serif;
+  padding: 0 20px 64px;
+  box-sizing: border-box;
+}
+.nl *, .nl *::before, .nl *::after { box-sizing: border-box; }
+
+.nl-top { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 22px 0; }
+.nl-mark {
+  width: 36px; height: 36px; display: grid; place-items: center;
+  background: var(--bk-ink); color: var(--bk-surface); border-radius: var(--bk-r-sm);
+  font: 22px/1 var(--bk-head), serif;
+}
+.nl-org { font-weight: 600; letter-spacing: .01em; }
+
+.nl-grid {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 56px; align-items: start;
+}
+
+/* The story: what the call is, in the business's own words. */
+.nl-cover {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+  border-radius: var(--bk-r); background: var(--bk-soft);
+}
+.nl-title { font: 400 clamp(40px, 5vw, 60px)/1.02 var(--bk-head), serif; letter-spacing: -.01em; margin: 28px 0 14px; }
+.nl-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; color: var(--bk-muted); font-size: 15px; }
+.nl-price { color: var(--bk-ink); font-weight: 700; }
+.nl-host { margin: 6px 0 28px; color: var(--bk-muted); font-size: 15px; }
+.nl-about { font-size: 17px; max-width: 62ch; }
+.nl-about strong { color: var(--bk-ink); }
+.nl-h2 { font: 400 30px/1.15 var(--bk-head), serif; margin: 36px 0 14px; }
+.nl-list { list-style: none; counter-reset: nl; padding: 0; margin: 0; display: grid; gap: 2px; max-width: 62ch; }
+.nl-list li {
+  counter-increment: nl; display: grid; grid-template-columns: 44px 1fr; gap: 8px; align-items: baseline;
+  padding: 14px 0; border-top: 1px solid var(--bk-line);
+}
+.nl-list li::before { content: counter(nl, decimal-leading-zero); font: 22px/1 var(--bk-head), serif; color: var(--bk-primary); }
+
+/* The booking panel: one card, three numbered parts in the order a customer fills them. */
+.nl-panel {
+  background: var(--bk-surface); border: 1px solid var(--bk-line); border-radius: var(--bk-r);
+  box-shadow: var(--bk-shadow); padding: 8px 24px 24px;
+}
+.nl-step { padding: 20px 0 22px; }
+.nl-step + .nl-step { border-top: 1px solid var(--bk-line); }
+.nl-step-title { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-size: 17px; font-weight: 700; }
+.nl-num {
+  width: 26px; height: 26px; display: grid; place-items: center; flex: none;
+  border: 1.5px solid var(--bk-ink); border-radius: var(--bk-r-btn); font-size: 13px; font-weight: 700;
+}
+
+.nl-month { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.nl-month-label { font-weight: 600; }
+.nl-arrow {
+  width: 44px; height: 44px; border: 1px solid var(--bk-line); background: var(--bk-surface); color: var(--bk-ink);
+  border-radius: var(--bk-r-btn); font-size: 22px; line-height: 1; cursor: pointer;
+}
+.nl-arrow:disabled { opacity: .35; cursor: default; }
+.nl-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.nl-wd { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--bk-muted); padding: 6px 0; }
+.nl-day {
+  height: 44px; border: 0; background: transparent; color: var(--bk-muted); font: inherit; font-size: 15px;
+  border-radius: var(--bk-r-day);
+}
+button.nl-day { background: var(--bk-soft); color: var(--bk-primary); font-weight: 700; cursor: pointer; }
+button.nl-day[aria-pressed="true"] { background: var(--bk-primary); color: var(--bk-on-primary); }
+
+.nl-times { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.nl-times-note { grid-column: 1 / -1; margin: 0; color: var(--bk-muted); font-size: 14px; }
+.nl-time {
+  min-height: 44px; border: 1px solid var(--bk-primary); background: var(--bk-surface); color: var(--bk-primary);
+  border-radius: var(--bk-r-btn); font: inherit; font-weight: 600; font-size: 15px; cursor: pointer;
+}
+.nl-time[aria-pressed="true"] { background: var(--bk-primary); color: var(--bk-on-primary); }
+.nl-time:disabled { cursor: progress; }
+
+.nl-tz { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 13px; color: var(--bk-muted); }
+.nl-tz select {
+  font: inherit; color: var(--bk-ink); background: var(--bk-surface); border: 1px solid var(--bk-line);
+  border-radius: var(--bk-r-sm); padding: 6px 8px; min-height: 36px;
+}
+.nl-held { margin: 12px 0 0; font-size: 14px; color: var(--bk-ink); }
+.nl-held:empty, .nl-error:empty { display: none; }
+.nl-error { margin: 12px 0 0; padding: 10px 12px; background: #fdecea; color: #8a1c12; border-radius: var(--bk-r-sm); font-size: 14px; }
+
+.nl-total { display: flex; justify-content: space-between; align-items: baseline; margin: 18px 0 14px; font-size: 15px; }
+.nl-total b { font: 400 28px/1 var(--bk-head), serif; }
+.nl-pay {
+  width: 100%; min-height: 52px; border: 0; border-radius: var(--bk-r-btn); cursor: pointer;
+  background: var(--bk-cta); color: var(--bk-on-cta); font: inherit; font-weight: 700; font-size: 16px;
+}
+.nl-pay:disabled { opacity: .45; cursor: not-allowed; }
+.nl-pay[aria-busy="true"] { opacity: .7; cursor: progress; }
+.nl-cutoff { margin: 12px 0 0; font-size: 13.5px; color: var(--bk-ink); }
+.nl-fine { margin: 6px 0 0; font-size: 12.5px; color: var(--bk-muted); }
+.nl-fine a { color: inherit; }
+
+.nl-powered { text-align: center; margin: 40px 0 0; font-size: 13px; color: var(--bk-muted); }
+.nl-jump { display: none; }
+
+.nl button:focus-visible, .nl a:focus-visible, .nl select:focus-visible { outline: 2px solid var(--bk-primary); outline-offset: 2px; }
+
+@media (max-width: 960px) {
+  .nl-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .nl-panel { max-width: 560px; width: 100%; margin: 0 auto; }
+  /* On a phone the story is long, so a bar jumps straight to booking until the panel is on screen. */
+  .nl-jump {
+    display: flex; align-items: center; justify-content: center;
+    position: sticky; bottom: 12px; margin: 24px auto 0; max-width: 560px; min-height: 52px;
+    background: var(--bk-cta); color: var(--bk-on-cta); border-radius: var(--bk-r-btn);
+    font-weight: 700; text-decoration: none; box-shadow: var(--bk-shadow);
+  }
+  .nl-jump[hidden] { display: none; }
+}
+@media (max-width: 480px) {
+  .nl { padding: 0 16px 48px; }
+  .nl-panel { padding: 4px 16px 20px; }
+  .nl-times { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -2,12 +2,17 @@
 
 A booking theme restyles the pages a business's customers book appointments on: the service page (calendar and times), **Your details**, **You're booked**, and the change-or-cancel pages. Open times, rules, holds, payments and emails always stay in Octabiz. A theme only changes how the pages look.
 
-There are two levels:
+There are two levels, and three extras you can add to either:
 
 | Level | What you ship | Example |
 | --- | --- | --- |
 | **1 · Tokens only** | One `theme.json` with colours, fonts and corners. Every built-in page uses them. | [Clay Studio](../examples/booking-theme-clay-studio) |
 | **2 · Your own pages** | `theme.json` plus your own HTML for any of the pages. Pages you don't replace use the built-in ones, in your tokens. | [Flow Yoga](../examples/booking-template-flow-yoga) |
+| + **One-page booking** | A `book` page: description, times, the customer's details and payment on one screen | [Northline Coaching](../examples/booking-template-northline-one-page) |
+| + **Custom fields** | `fields`: questions customers answer when they book, checked by Octabiz | [Paws & Suds](../examples/booking-fields-paws-grooming) |
+| + **New service kinds** | `serviceKinds`: a kind of booking Octabiz doesn't have yet, with its own setup, pricing and page | [Bayline Kayaks](../examples/booking-kind-bayline-rentals) |
+
+> **The three extras are in preview.** `preview.mjs` and `validate.mjs` support them today, so you can build and test against the contract below. The developer portal doesn't accept them yet. Until it does, an upload that uses `book`, `fields` or `serviceKinds` is turned down at the schema check.
 
 The full contract also lives at [octabiz.ai/developers/docs/booking-themes](https://octabiz.ai/developers/docs/booking-themes), and you can try any `theme.json` in the [theme playground](https://octabiz.ai/developers/booking-theme-playground).
 
@@ -141,6 +146,118 @@ Review sends a page back without these. `validate.mjs` checks for them:
 | `<p data-bk="powered-by"></p>`: Octabiz fills it, or hides it on plans that remove it | every page |
 
 Also keep tap targets at least 44px tall on phones, and use the corner tokens for every `border-radius` (only `0` can be a literal), so a business's corner choice still applies.
+
+## One-page booking: the `book` page (preview)
+
+Set `"pages": { "book": "booking/book.html" }` and customers do everything on `/book/:service`: read about the service, pick a time, fill in their details and pay. Nothing navigates until they're booked. A theme with `book` doesn't use `service` or `details`; `validate.mjs` warns if you set them as well.
+
+Page data: `org`, `service`, `fields`, `timezone`, `error`. On top of the Level 2 service data, `service` has `cover` (`{ url, alt }` or `null`), `price.upfront` (paid when booking) and, for a [new service kind](#new-service-kinds-preview), `kind`.
+
+Octabiz fills these elements for you, in your tokens:
+
+| Element | What appears |
+| --- | --- |
+| `<div data-bk="description"></div>` | The business's formatted description: paragraphs, bold, lists and links, cleaned by Octabiz. Template values are always escaped, so this is the only way to show formatting |
+| `<div data-bk="fields"></div>` | The customer's details: name, email, phone if the business asks for it, the business's own questions and your theme's [custom fields](#custom-fields-preview) |
+| `<div data-bk="payment"></div>` | Octabiz's payment frame (card, Apple Pay, Google Pay, PayPal) when the service is paid upfront. Empty otherwise. Your code never sees card details |
+
+Required on `book`: the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="terms"` and `data-bk="powered-by"`. If you leave out `data-bk="fields"`, draw your own inputs from `getFields()` and send the answers yourself.
+
+### The SDK, version 2
+
+Everything from Level 2 still works. These are new:
+
+| Call | Does |
+| --- | --- |
+| `page` | The page data above, read-only. Handy for the parts a template can't loop over |
+| `getFields(serviceId)` | `[{ id, type, label, help, required, options, … }]`: every field this booking asks for, in order |
+| `readFields()` | Reads the `data-bk="fields"` form. Returns `{ guest, answers }`, or `null` after marking what's missing or wrong on the form |
+| `validate(serviceId, answers)` | `{ ok, errors: { fieldId: sentence } }`, the same check the server runs. For pages that draw their own inputs |
+| `quote(serviceId, selection, answers?)` | `{ lines: [{ label, amountText }], totalText, upfront }`: the price for what the customer picked, in the business's currency. Pass `answers` when a [kind](#new-service-kinds-preview) prices add-ons from fields |
+| `getSlots(serviceId, date, tz, selection?)` | As before. With a `selection` (`{ minutes, quantity }`) it only returns starts where that fits, and each slot has `remaining` |
+| `hold(serviceId, start, selection?)` | As before, holding the length and quantity too |
+| `book({ holdId, guest, answers })` | Books it. If the service is paid upfront it first confirms the payment frame. On success Octabiz opens **You're booked** itself |
+
+`book()` errors, as `{ code, message }`: `SLOT_TAKEN`, `HOLD_EXPIRED`, `PAYMENT_FAILED`, and `FIELD_INVALID`, which also has `fields: { fieldId: sentence }`. As before, show `message` as it is.
+
+## Custom fields (preview)
+
+`fields` adds questions to the booking form. They show on the built-in **Your details** page and in `data-bk="fields"`, so a tokens-only theme can use them too.
+
+```json
+"fields": [
+  { "id": "pet_name", "type": "text", "label": "Your pet's name", "required": true, "maxLength": 40 },
+  { "id": "species", "type": "select", "label": "Dog or cat?", "options": ["Dog", "Cat"], "display": "chips", "required": true },
+  { "id": "weight_kg", "type": "number", "label": "Weight", "unit": "kg", "min": 1, "max": 90, "step": 0.5 },
+  { "id": "vet_phone", "type": "phone", "label": "Your vet's phone number", "sensitive": true }
+]
+```
+
+| Key | Required | What it does |
+| --- | --- | --- |
+| `id` | yes | `a-z`, `0-9` and `_`, up to 32 characters, unique in the theme. Keep it the same across versions: it's where the answers are stored |
+| `type` | yes | `text`, `textarea`, `email`, `phone`, `url`, `number`, `select`, `multiselect`, `checkbox` or `date` |
+| `label` | yes | The question, up to 80 characters |
+| `help` | no | One line under the input, up to 160 characters |
+| `required` | no | `true` to make it required. A required `checkbox` is a consent the customer has to tick |
+| `options` | `select`, `multiselect` | Up to 30 choices, each up to 60 characters |
+| `display` | no | `chips` or `list` for `select` and `multiselect` |
+| `min` · `max` · `step` · `unit` | no | For `number` |
+| `maxLength` | no | For `text` (up to 200) and `textarea` (up to 2000) |
+| `dates` | no | For `date`: `past` or `future` |
+| `sensitive` | no | `true` keeps the answer out of emails and calendar invites. Only staff see it |
+| `appliesTo` | no | Ids of your `serviceKinds` the field is for. Leave it out to ask it on every service |
+
+Up to 20 fields. When a business installs your theme it can turn each field off, or make it optional, per service in **Bookings → Services → Questions**.
+
+What Octabiz does with the answers:
+
+- **Checks them on the server** against your definition (type, required, options, limits), whether they came from `data-bk="fields"` or your own inputs.
+- **Stores them with the appointment.** Staff see them on the appointment, in exports and in reports, under your field's label.
+- **Prints them in emails** as `{{ answers.pet_name }}` when the business edits its confirmation, unless the field is `sensitive`.
+- **Keeps them** if the theme is removed later. The fields stop showing, and past answers stay on their appointments.
+
+Your pages only ever see what the customer typed during this visit. A theme can't read answers back from Octabiz.
+
+## New service kinds (preview)
+
+Octabiz has appointments, classes, visits and walk-ins built in. `serviceKinds` adds a kind of booking it doesn't have, made from the same building blocks the booking engine already checks: how long a booking lasts, how many can share a time, and how the price adds up. Octabiz still works out open times, holds, payment, emails and the staff calendar.
+
+```json
+"serviceKinds": [{
+  "id": "rental",
+  "name": "Equipment rental",
+  "description": "Customers rent a number of items for a few hours.",
+  "icon": "sailboat",
+  "time": { "mode": "range", "minMinutes": 120, "maxMinutes": 480, "stepMinutes": 60 },
+  "capacity": { "mode": "units", "unitLabel": "kayak", "unitLabelPlural": "kayaks", "maxPerBooking": 6 },
+  "pricing": { "per": ["unit", "hour"], "rate": "settings.hourly_rate", "upfront": true,
+               "addOns": [{ "field": "dry_bags", "each": "settings.dry_bag_price", "label": "Dry bags" }] },
+  "settings": [
+    { "id": "units_total", "type": "number", "label": "Kayaks you rent out", "default": 12, "min": 1, "max": 500, "maps": "capacity.total" },
+    { "id": "hourly_rate", "type": "money", "label": "Price per kayak, per hour", "default": 18 },
+    { "id": "dry_bag_price", "type": "money", "label": "Dry bag, each", "default": 4 }
+  ],
+  "page": "booking/rental.html",
+  "example": { "name": "Sit-on-top kayak", "description": "Stable, easy kayaks for the bay." }
+}]
+```
+
+| Key | What it does |
+| --- | --- |
+| `id`, `name`, `description`, `icon` | How the kind appears when a business adds a service. `icon` is a [Lucide](https://lucide.dev/icons) name |
+| `time.mode` | `fixed`: the business sets the length (`maps: "time.minutes"`). `choice`: the customer picks from `options` (minutes). `range`: the customer picks between `minMinutes` and `maxMinutes` in `stepMinutes` |
+| `capacity.mode` | `one`: one booking per time. `seats`: a group shares a time, up to `total` people. `units`: a pool of `total` items, and bookings overlap until the pool runs out |
+| `pricing.per` | Any of `booking`, `person`, `unit` and `hour`. The price is `rate` times each one you list |
+| `pricing.upfront` | `true` to take payment when the customer books. Otherwise they pay at the visit |
+| `pricing.addOns` | Extras priced from a field: a `number` field adds `each` × the answer, a `checkbox` adds `each` once |
+| `settings` | What the business fills in when it creates a service of this kind. Types: `number`, `money`, `select`, `text`, `checkbox`. `maps` sends a value to `capacity.total`, `capacity.maxPerBooking` or `time.minutes`. `money` is always in the business's currency |
+| `page` | The `book` page for services of this kind. Same data and required elements as `book`, plus `service.kind` |
+| `example` | The sample service in the preview tool and on your market listing |
+
+Prices are always worked out by Octabiz from these rules, and taxes, deposits, refunds and gift cards apply as usual. Your page shows `quote()`, never its own sums. Pricing or availability rules you can't describe here aren't possible yet. Tell us what you need under **Requests** in the developer portal.
+
+Up to 5 kinds per theme. A business that installs your theme sees them in **Bookings → Services → New service**. If it removes the theme later, its services of that kind stop taking new bookings, and existing bookings stay.
 
 ## Develop, check and package
 

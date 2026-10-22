@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="booking/book.css">
+<div class="nl">
+  <header class="nl-top">
+    <span class="nl-mark" aria-hidden="true">{{ org.initial }}</span>
+    <span class="nl-org">{{ org.name }}</span>
+  </header>
+
+  <div class="nl-grid">
+    <article class="nl-story">
+      <img class="nl-cover" src="{{ service.cover.url }}" alt="{{ service.cover.alt }}" width="1200" height="675">
+      <h1 class="nl-title">{{ service.name }}</h1>
+      <p class="nl-meta">
+        <span class="nl-price">{{ service.priceText }}</span>
+        <span>{{ service.durationMin }} minutes</span>
+        <span>{{ service.location.label }}</span>
+      </p>
+      <p class="nl-host">With {{ service.host.name }}</p>
+      <div class="nl-about" data-bk="description"></div>
+      <h2 class="nl-h2">You leave with</h2>
+      <ol class="nl-list">{{#each service.highlights}}<li>{{ this }}</li>{{/each}}</ol>
+    </article>
+
+    <aside class="nl-panel" id="nl-book" aria-label="Book this call">
+      <section class="nl-step" aria-labelledby="nl-step-time">
+        <h2 class="nl-step-title" id="nl-step-time"><span class="nl-num" aria-hidden="true">1</span>Pick a time</h2>
+        <div class="nl-month">
+          <button type="button" class="nl-arrow" id="nl-prev" aria-label="Previous month">&#8249;</button>
+          <span class="nl-month-label" id="nl-month-label" aria-live="polite"></span>
+          <button type="button" class="nl-arrow" id="nl-next" aria-label="Next month">&#8250;</button>
+        </div>
+        <div class="nl-cal" id="nl-cal"></div>
+        <div class="nl-times" id="nl-times" aria-live="polite"></div>
+        <label class="nl-tz">Times shown in <select data-bk="timezone" id="nl-tz"></select></label>
+        <p class="nl-held" id="nl-held" role="status"></p>
+        <p class="nl-error" id="nl-error" role="alert"></p>
+      </section>
+
+      <section class="nl-step" aria-labelledby="nl-step-you">
+        <h2 class="nl-step-title" id="nl-step-you"><span class="nl-num" aria-hidden="true">2</span>About you</h2>
+        <div data-bk="fields"></div>
+      </section>
+
+      <section class="nl-step" aria-labelledby="nl-step-pay">
+        <h2 class="nl-step-title" id="nl-step-pay"><span class="nl-num" aria-hidden="true">3</span>Pay</h2>
+        <div data-bk="payment"></div>
+        <div class="nl-total"><span>Total</span><b>{{ service.priceText }}</b></div>
+        <button type="button" class="nl-pay" id="nl-pay" disabled>Pick a time first</button>
+        <p class="nl-cutoff">{{ service.cutoffText }}</p>
+        <p class="nl-fine" data-bk="terms"></p>
+      </section>
+    </aside>
+  </div>
+
+  <p class="nl-powered" data-bk="powered-by"></p>
+  <a class="nl-jump" id="nl-jump" href="#nl-book">Book a time · {{ service.priceText }}</a>
+</div>
+<script src="booking/book.js"></script>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-label="Two kayaks seen from above on calm water, next to a dock">
+  <rect width="960" height="640" fill="#2f7f8c"/>
+  <!-- light on the water -->
+  <g stroke="#7fc0c6" stroke-width="4" stroke-linecap="round" opacity=".55" fill="none">
+    <path d="M80 120c40-12 80-12 120 0"/><path d="M600 90c40-12 80-12 120 0"/><path d="M140 520c40-12 80-12 120 0"/>
+    <path d="M520 560c40-12 80-12 120 0"/><path d="M380 200c30-9 60-9 90 0"/><path d="M60 330c30-9 60-9 90 0"/>
+  </g>
+  <!-- the dock -->
+  <rect x="760" y="0" width="200" height="640" fill="#b98b5a"/>
+  <g stroke="#9c7346" stroke-width="4"><path d="M760 80h200M760 160h200M760 240h200M760 320h200M760 400h200M760 480h200M760 560h200"/></g>
+  <circle cx="776" cy="200" r="14" fill="#5d4128"/><circle cx="776" cy="440" r="14" fill="#5d4128"/>
+  <!-- kayak one, tied to the dock -->
+  <g transform="rotate(-8 520 250)">
+    <path d="M300 250c60-46 380-46 440 0-60 46-380 46-440 0z" fill="#e2572b"/>
+    <ellipse cx="470" cy="250" rx="62" ry="22" fill="#0f2430"/>
+    <ellipse cx="600" cy="250" rx="40" ry="16" fill="#0f2430" opacity=".85"/>
+    <path d="M380 180l220 140" stroke="#0f2430" stroke-width="8" stroke-linecap="round"/>
+    <path d="M370 172l26 4-10 18zM592 318l26 14-22 8z" fill="#0f2430"/>
+  </g>
+  <path d="M736 236c20 4 30 0 40-36" fill="none" stroke="#f3ead8" stroke-width="4"/>
+  <!-- kayak two -->
+  <g transform="rotate(10 470 440)">
+    <path d="M250 440c60-44 380-44 440 0-60 44-380 44-440 0z" fill="#f2c14e"/>
+    <ellipse cx="420" cy="440" rx="62" ry="22" fill="#0f2430"/>
+    <ellipse cx="550" cy="440" rx="40" ry="16" fill="#0f2430" opacity=".85"/>
+  </g>
+  <path d="M736 476c20 -4 30 0 40 -36" fill="none" stroke="#f3ead8" stroke-width="4"/>
+</svg>

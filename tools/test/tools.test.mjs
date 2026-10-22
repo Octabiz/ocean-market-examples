@@ -5,11 +5,13 @@ import { mkdtempSync, writeFileSync, mkdirSync, cpSync, readFileSync, rmSync } f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { validate, contrast } from '../validate.mjs';
 import { renderTemplate, hexToHslTriple } from '../lib/render.mjs';
 import { createZip } from '../lib/zip.mjs';
+import { listFiles } from '../lib/files.mjs';
 
-const EX = new URL('../../examples/', import.meta.url).pathname;
+const EX = fileURLToPath(new URL('../../examples/', import.meta.url));
 const copy = (name) => {
   const dir = mkdtempSync(join(tmpdir(), 'om-'));
   cpSync(join(EX, name), dir, { recursive: true });
@@ -18,7 +20,7 @@ const copy = (name) => {
 const failed = (r) => r.checks.filter((c) => c.status === 'fail').map((c) => c.label);
 
 test('every example passes', () => {
-  for (const name of ['embedded-top-customers', 'embedded-birthday-reminders', 'landing-template-bright-clinic', 'store-theme-harbor-linen', 'booking-theme-clay-studio', 'booking-template-flow-yoga']) {
+  for (const name of ['embedded-top-customers', 'embedded-birthday-reminders', 'landing-template-bright-clinic', 'store-theme-harbor-linen', 'booking-theme-clay-studio', 'booking-template-flow-yoga', 'booking-template-northline-one-page', 'booking-fields-paws-grooming', 'booking-kind-bayline-rentals']) {
     const r = validate(join(EX, name));
     assert.equal(r.ok, true, `${name}: ${failed(r).join(', ')}`);
   }
@@ -114,4 +116,25 @@ test('zip: the archive lists and extracts (checked with unzip when available)', 
     if (e.code !== 'ENOENT') throw e;
   }
   rmSync(dir, { recursive: true });
+});
+
+test('booking v2: a book page needs the payment frame, and bad fields and kinds are caught', () => {
+  const dir = copy('booking-kind-bayline-rentals');
+  const t = JSON.parse(readFileSync(join(dir, 'theme.json'), 'utf8'));
+  writeFileSync(join(dir, 'booking/rental.html'), readFileSync(join(dir, 'booking/rental.html'), 'utf8').replace('data-bk="payment"', ''));
+  assert.ok(failed(validate(dir)).includes('Custom pages have what review needs'));
+  t.fields.push({ id: 'email', type: 'text', label: 'Email again' }, { id: 'size', type: 'select', label: 'Size' });
+  t.serviceKinds[0].pricing.rate = 18;
+  t.serviceKinds[0].time = { mode: 'range', minMinutes: 120, maxMinutes: 470, stepMinutes: 60 };
+  writeFileSync(join(dir, 'theme.json'), JSON.stringify(t));
+  const schema = validate(dir).checks.find((c) => c.label === 'theme.json matches the booking theme schema');
+  assert.equal(schema.status, 'fail');
+  for (const bit of ['"email" is a built-in field', 'options needs 1–30 choices', 'rate must be settings.', 'stepMinutes that divides']) assert.ok(schema.detail.includes(bit), bit);
+  rmSync(dir, { recursive: true });
+});
+
+test('booking v2: preview.json and preview/ stay out of the package', () => {
+  const files = listFiles(join(EX, 'booking-template-northline-one-page'));
+  assert.ok(!files.some((f) => f.startsWith('preview')), files.join(', '));
+  assert.ok(files.includes('booking/book.js'));
 });

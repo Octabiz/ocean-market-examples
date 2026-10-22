@@ -1,0 +1,19 @@
+{
+  "org": { "name": "Paws & Suds", "initial": "P", "phone": "+1 (604) 555-0117" },
+  "service": {
+    "id": "svc_full_groom",
+    "slug": "full-groom",
+    "name": "Full groom, medium dog",
+    "description": "Bath, blow-dry, haircut, nails and ears. Usually 90 minutes, a little longer for thick or matted coats.",
+    "highlights": ["Hypoallergenic shampoo unless you bring your own", "Nails clipped and filed", "A photo when they're ready to collect"],
+    "durationMin": 90,
+    "location": { "type": "in_person", "label": "2140 Commercial Dr, Vancouver", "address": "2140 Commercial Dr, Vancouver" },
+    "price": { "amount": 85, "currency": "CAD", "upfront": false },
+    "priceText": "CA$85",
+    "host": { "name": "Dana Okafor" },
+    "cutoffText": "Change or cancel online up to 12 hours before."
+  },
+  "businessFields": [],
+  "guest": { "name": "Priya Nair", "email": "priya.nair@shaw.ca" },
+  "confirmationMessage": "Drop-off is at the side door. We'll text you when Biscuit is ready."
+}

@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="booking/rental.css">
+<div class="by">
+  <header class="by-top">
+    <span class="by-mark" aria-hidden="true">{{ org.initial }}</span>
+    <span class="by-org">{{ org.name }}</span>
+    <span class="by-where">{{ service.location.label }}</span>
+  </header>
+
+  <section class="by-hero">
+    <div class="by-hero-text">
+      <h1 class="by-title">{{ service.name }}</h1>
+      <p class="by-rate">{{ service.priceText }}</p>
+      <div class="by-about" data-bk="description"></div>
+      <ul class="by-incl">{{#each service.highlights}}<li>{{ this }}</li>{{/each}}</ul>
+    </div>
+    <img class="by-cover" src="{{ service.cover.url }}" alt="{{ service.cover.alt }}" width="960" height="640">
+  </section>
+
+  <div class="by-grid">
+    <section class="by-plan" aria-labelledby="by-plan-title">
+      <h2 class="by-h2" id="by-plan-title">Plan your paddle</h2>
+
+      <div class="by-row">
+        <span class="by-label" id="by-day-label">Day</span>
+        <div class="by-days" id="by-days" role="group" aria-labelledby="by-day-label"></div>
+      </div>
+
+      <div class="by-steppers">
+        <div class="by-stepper" role="group" aria-labelledby="by-hours-label">
+          <span class="by-label" id="by-hours-label">How long</span>
+          <div class="by-step-ctl">
+            <button type="button" class="by-step-btn" id="by-hours-less" aria-label="Shorter">&minus;</button>
+            <output class="by-step-val" id="by-hours" aria-live="polite"></output>
+            <button type="button" class="by-step-btn" id="by-hours-more" aria-label="Longer">+</button>
+          </div>
+          <span class="by-hint" id="by-hours-hint"></span>
+        </div>
+        <div class="by-stepper" role="group" aria-labelledby="by-qty-label">
+          <span class="by-label" id="by-qty-label">How many</span>
+          <div class="by-step-ctl">
+            <button type="button" class="by-step-btn" id="by-qty-less" aria-label="Fewer">&minus;</button>
+            <output class="by-step-val" id="by-qty" aria-live="polite"></output>
+            <button type="button" class="by-step-btn" id="by-qty-more" aria-label="More">+</button>
+          </div>
+          <span class="by-hint" id="by-qty-hint"></span>
+        </div>
+      </div>
+
+      <div class="by-row">
+        <span class="by-label">Start time</span>
+        <div class="by-times" id="by-times" aria-live="polite"></div>
+        <label class="by-tz">Times shown in <select data-bk="timezone" id="by-tz"></select></label>
+      </div>
+      <p class="by-error" id="by-error" role="alert"></p>
+    </section>
+
+    <aside class="by-summary" aria-labelledby="by-sum-title">
+      <h2 class="by-h2" id="by-sum-title">Your rental</h2>
+      <p class="by-when" id="by-when">Pick a day and a start time.</p>
+      <dl class="by-lines" id="by-lines"></dl>
+      <div class="by-total"><span>Total</span><b id="by-total"></b></div>
+      <p class="by-held" id="by-held" role="status"></p>
+      <div class="by-fields" data-bk="fields"></div>
+      <div class="by-pay" data-bk="payment"></div>
+      <button type="button" class="by-book" id="by-book" disabled>Pick a start time</button>
+      <p class="by-cutoff">{{ service.cutoffText }}</p>
+      <p class="by-fine" data-bk="terms"></p>
+    </aside>
+  </div>
+  <p class="by-powered" data-bk="powered-by"></p>
+</div>
+<script src="booking/rental.js"></script>
