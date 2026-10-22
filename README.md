@@ -1,6 +1,6 @@
 # Ocean Market examples
 
-Complete, working examples of everything you can build for **Ocean Market**, the Octabiz app store: embedded apps, landing page templates, store themes and booking themes. The first four are real listings that went through Octabiz review. Clay Studio and Flow Yoga are newer and pass every upload check. The last three use the booking contract's preview parts (one-page booking, custom fields, new service kinds), which the tools here support and the developer portal doesn't accept yet. Download the repo, run an example on your computer, change it, and submit your own.
+Complete, working examples of everything you can build for **Ocean Market**, the Octabiz app store: embedded apps, landing page templates, store themes and booking themes. The first four are real listings that went through Octabiz review. Clay Studio and Flow Yoga are newer and pass every upload check. The last three use the newest parts of the booking contract: one-page booking and custom fields, which the developer portal accepts, and new service kinds, which it doesn't accept yet. See [docs/booking-themes.md](docs/booking-themes.md) for where each one stands. Download the repo, run an example on your computer, change it, and submit your own.
 
 <table>
   <tr>

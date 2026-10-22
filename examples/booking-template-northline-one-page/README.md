@@ -2,7 +2,7 @@
 
 A coaching call sold and booked on one page. The left side is the pitch: cover image, price, the business's own description and what the customer leaves with. On the right, one card has the whole booking in order: pick a time, answer four questions, pay. Nothing opens a new page until the customer is booked.
 
-> Uses the **preview** parts of the booking theme contract (`book`, `fields`). They run in `tools/preview.mjs` and pass `validate.mjs`; the developer portal doesn't accept them yet. See [docs/booking-themes.md](../../docs/booking-themes.md#one-page-booking-the-book-page-preview).
+> Uses the `book` page and custom fields, which the developer portal accepts. Businesses see `book` pages on dev.octabiz.ai for now, while their security review finishes. A service paid when booking keeps the built-in page until the payment frame ships. See [docs/booking-themes.md](../../docs/booking-themes.md#one-page-booking-the-book-page-preview).
 
 <img alt="Northline at 1440px: the cover, title, price and description on the left, the calendar and times on the right" src="screenshots/page.png">
 

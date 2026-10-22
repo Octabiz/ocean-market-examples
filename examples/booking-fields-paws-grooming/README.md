@@ -2,7 +2,7 @@
 
 A dog and cat groomer needs to know who's coming before they arrive: the pet's name, size, coat, anything that makes them nervous, and whether their vaccines are current. This theme adds those nine questions to the built-in **Your details** page. It has no HTML at all, just one `theme.json`.
 
-> Uses the **preview** part of the booking theme contract (`fields`). It runs in `tools/preview.mjs` and passes `validate.mjs`; the developer portal doesn't accept it yet. See [docs/booking-themes.md](../../docs/booking-themes.md#custom-fields-preview).
+> Uses custom fields (`fields`), which the developer portal accepts. See [docs/booking-themes.md](../../docs/booking-themes.md#custom-fields-preview).
 
 | Filled in | What Octabiz checks |
 | --- | --- |

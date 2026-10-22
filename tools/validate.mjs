@@ -304,7 +304,7 @@ function validateBookingTheme(dir) {
   if (shadowed.length) checks.push(warn('Settings change what they say', `"${shadowed[0].label}" maps to accent, but tokens.primary/soft are set too, so it has no effect. Drop them from tokens, or map the setting to tokens.primary.`));
 
   if (t.pages?.book && (t.pages.service || t.pages.details)) checks.push(warn('Pages Octabiz will use', 'pages.book replaces service and details, so those two pages are never shown. Remove them.'));
-  if (t.fields?.length || t.serviceKinds?.length || t.pages?.book) checks.push(warn('Preview contract', 'book, fields and serviceKinds work in these tools, but the developer portal doesn\'t accept them yet.'));
+  if (t.serviceKinds?.length) checks.push(warn('Preview contract', 'serviceKinds work in these tools, but the developer portal doesn\'t accept them yet.'));
 
   const resolved = resolveTheme(applySettings(t));
   for (const [label, fg, bg, min] of CONTRAST_PAIRS) {

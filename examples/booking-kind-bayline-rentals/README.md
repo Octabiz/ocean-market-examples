@@ -10,7 +10,7 @@ The kind is built from blocks the booking engine already checks:
 
 The business fills in four settings. Customers book on a page made for renting.
 
-> Uses the **preview** parts of the booking theme contract (`serviceKinds`, `fields`). They run in `tools/preview.mjs` and pass `validate.mjs`; the developer portal doesn't accept them yet. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
+> Uses `serviceKinds`, which the developer portal doesn't accept yet (custom fields it does). Everything runs in `tools/preview.mjs` and passes `validate.mjs`. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
 
 <img alt="Bayline at 1440px: title, price per kayak per hour, a drawing of two kayaks by a dock, and the planner below" src="screenshots/page.png">
 
