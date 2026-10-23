@@ -10,7 +10,7 @@ The kind is built from blocks the booking engine already checks:
 
 The business fills in four settings. Customers book on a page made for renting.
 
-> Uses `serviceKinds` and custom fields, which the developer portal accepts. Businesses see kind pages on dev.octabiz.ai for now. Customers pay at the dock: a kind paid when booking waits for the payment frame. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
+> Uses `serviceKinds` and custom fields, which the developer portal accepts. Businesses see kind pages on their booking page. This one has customers pay at the dock; a kind with `pricing.upfront` goes to Stripe's checkout instead. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
 
 <img alt="Bayline at 1440px: title, price per kayak per hour, a drawing of two kayaks by a dock, and the planner below" src="screenshots/page.png">
 
