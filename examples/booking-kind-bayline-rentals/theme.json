@@ -37,7 +37,7 @@
       "pricing": {
         "per": ["unit", "hour"],
         "rate": "settings.hourly_rate",
-        "upfront": true,
+        "upfront": false,
         "addOns": [{ "field": "dry_bags", "each": "settings.dry_bag_price", "label": "Dry bags" }]
       },
       "settings": [

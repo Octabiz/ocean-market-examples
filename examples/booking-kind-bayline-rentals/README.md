@@ -10,11 +10,11 @@ The kind is built from blocks the booking engine already checks:
 
 The business fills in four settings. Customers book on a page made for renting.
 
-> Uses `serviceKinds`, which the developer portal doesn't accept yet (custom fields it does). Everything runs in `tools/preview.mjs` and passes `validate.mjs`. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
+> Uses `serviceKinds` and custom fields, which the developer portal accepts. Businesses see kind pages on dev.octabiz.ai for now. Customers pay at the dock: a kind paid when booking waits for the payment frame. See [docs/booking-themes.md](../../docs/booking-themes.md#new-service-kinds-preview).
 
 <img alt="Bayline at 1440px: title, price per kayak per hour, a drawing of two kayaks by a dock, and the planner below" src="screenshots/page.png">
 
-<img alt="Planning a rental: Friday, 3 hours, 2 kayaks, 10:00am picked; the summary shows 2 kayaks × 3 hours at CA$18 = CA$108, 2 dry bags CA$8, total CA$116, and a Pay CA$116 and book button" src="screenshots/plan-and-price.png">
+<img alt="Planning a rental: Monday, 3 hours, 2 kayaks, 10:00am picked; the summary shows 2 kayaks × 3 hours at CA$18 = CA$108, 2 dry bags CA$8, total CA$116, and a Book · pay CA$116 at the dock button" src="screenshots/plan-and-price.png">
 
 | Not enough left | What the business fills in | Phone |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ The business fills in four settings. Customers book on a page made for renting.
   "name": "Equipment rental",
   "time":     { "mode": "range", "minMinutes": 120, "maxMinutes": 480, "stepMinutes": 60 },
   "capacity": { "mode": "units", "unitLabel": "kayak", "unitLabelPlural": "kayaks" },
-  "pricing":  { "per": ["unit", "hour"], "rate": "settings.hourly_rate", "upfront": true,
+  "pricing":  { "per": ["unit", "hour"], "rate": "settings.hourly_rate", "upfront": false,
                 "addOns": [{ "field": "dry_bags", "each": "settings.dry_bag_price", "label": "Dry bags" }] },
   "settings": [ "units_total → capacity.total", "max_per_booking → capacity.maxPerBooking", "hourly_rate", "dry_bag_price" ],
   "page": "booking/rental.html"

@@ -161,7 +161,7 @@
     });
   }
   function setBookLabel() {
-    if (held && quoted) book.textContent = (quoted.upfront ? 'Pay ' + quoted.totalText + ' and book' : 'Book it');
+    if (held && quoted) book.textContent = quoted.upfront ? 'Pay ' + quoted.totalText + ' and book' : 'Book · pay ' + quoted.totalText + ' at the dock';
   }
   document.querySelector('[data-bk="fields"]').addEventListener('input', function (e) {
     if (e.target.name === 'dry_bags') requote();

@@ -304,7 +304,8 @@ function validateBookingTheme(dir) {
   if (shadowed.length) checks.push(warn('Settings change what they say', `"${shadowed[0].label}" maps to accent, but tokens.primary/soft are set too, so it has no effect. Drop them from tokens, or map the setting to tokens.primary.`));
 
   if (t.pages?.book && (t.pages.service || t.pages.details)) checks.push(warn('Pages Octabiz will use', 'pages.book replaces service and details, so those two pages are never shown. Remove them.'));
-  if (t.serviceKinds?.length) checks.push(warn('Preview contract', 'serviceKinds work in these tools, but the developer portal doesn\'t accept them yet.'));
+  const notYet = (t.serviceKinds ?? []).filter((k) => k.capacity?.mode !== 'units' || k.pricing?.upfront);
+  if (notYet.length) checks.push(warn('Octabiz can book these kinds', `${notYet.map((k) => k.id).join(', ')}: Octabiz books units kinds paid at the visit for now; seats, one and pay-when-booking kinds come later.`));
 
   const resolved = resolveTheme(applySettings(t));
   for (const [label, fg, bg, min] of CONTRAST_PAIRS) {

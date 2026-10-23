@@ -15,7 +15,8 @@ There are two levels, and three extras you can add to either:
 > **Where each extra stands.**
 > * **Custom fields** are live. A business can turn your questions off, or make them optional, per service.
 > * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. Until the payment frame ships, a service paid when booking, or a group session, uses the built-in page.
-> * **`serviceKinds`** aren't accepted yet. `preview.mjs` and `validate.mjs` support all three today.
+> * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on dev.octabiz.ai for now. A kind paid when booking waits for the payment frame. `one` and `seats` kinds come later.
+> `preview.mjs` and `validate.mjs` support all of it today.
 
 The full contract also lives at [octabiz.ai/developers/docs/booking-themes](https://octabiz.ai/developers/docs/booking-themes), and you can try any `theme.json` in the [theme playground](https://octabiz.ai/developers/booking-theme-playground).
 
