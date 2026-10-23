@@ -14,8 +14,8 @@ There are two levels, and three extras you can add to either:
 
 > **Where each extra stands.**
 > * **Custom fields** are live. A business can turn your questions off, or make them optional, per service.
-> * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. A service paid when booking goes to Stripe's checkout from your page. A group session opens on your page too, and picking a session holds one seat for 10 minutes.
-> * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on dev.octabiz.ai for now. A kind paid when booking (`pricing.upfront`) goes to Stripe's checkout too, for the total its quote shows. `one` and `seats` kinds come later.
+> * **`book` and your own `service` page** are accepted on upload and show on the business's booking page. A service paid when booking goes to Stripe's checkout from your page. A group session opens on your page too, and picking a session holds one seat for 10 minutes.
+> * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on the business's booking page. A kind paid when booking (`pricing.upfront`) goes to Stripe's checkout too, for the total its quote shows. `one` and `seats` kinds come later.
 > `preview.mjs` and `validate.mjs` support all of it today.
 
 The full contract also lives at [octabiz.ai/developers/docs/booking-themes](https://octabiz.ai/developers/docs/booking-themes), and you can try any `theme.json` in the [theme playground](https://octabiz.ai/developers/booking-theme-playground).
@@ -115,7 +115,7 @@ Put page templates in `booking/`. Each one replaces one built-in page:
 | `change` | `/book/manage/:token`, changing the time | `org`, `service`, `appointment`, `canChange`, `timezone` |
 | `cancel` | `/book/manage/:token`, cancelling | `org`, `service`, `appointment`, `canChange`, `cancellationMessage`, `refundText` |
 
-On the booking's own pages, `appointment` has `serviceName`, `hostName`, `start` and `end` (ISO, UTC), `timezone`, `dayText` (`Mon, Nov 2`) and `timeText` (`10:00am – 11:30am`) in the booking's time zone, `location.label` (the service's place) and `status`. Nothing about the customer reaches these pages: no name, email or address. `canChange` is false inside the cancellation window, when changes are by phone. `confirmationMessage` is the business's own note (or empty), and `refundText` says what goes back to the customer's card (or is empty when nothing was paid). Put `<div data-bk="add-to-calendar"></div>` on `confirmed` for Google, Outlook and Apple calendar buttons; your page can't open those itself. These pages show on dev.octabiz.ai for now, and adding guests stays on the built-in page.
+On the booking's own pages, `appointment` has `serviceName`, `hostName`, `start` and `end` (ISO, UTC), `timezone`, `dayText` (`Mon, Nov 2`) and `timeText` (`10:00am – 11:30am`) in the booking's time zone, `location.label` (the service's place) and `status`. Nothing about the customer reaches these pages: no name, email or address. `canChange` is false inside the cancellation window, when changes are by phone. `confirmationMessage` is the business's own note (or empty), and `refundText` says what goes back to the customer's card (or is empty when nothing was paid). Put `<div data-bk="add-to-calendar"></div>` on `confirmed` for Google, Outlook and Apple calendar buttons; your page can't open those itself. Adding guests stays on the built-in page.
 
 `service` has `id`, `name`, `description`, `highlights` (a list), `durationMin`, `location.label`, `price`, `priceText` (for example `$25` or `Free`), `host.name` and `cutoffText`. `org` has `name`, `initial`, `phone`, `termsUrl` and `privacyUrl`.
 
