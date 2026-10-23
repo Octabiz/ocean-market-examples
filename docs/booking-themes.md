@@ -46,7 +46,7 @@ The full contract also lives at [octabiz.ai/developers/docs/booking-themes](http
 | `extends` | no | Built-in preset to start from: `octabiz` (default), `clean`, `studio` or `night` |
 | `accent` | no | Shortcut: sets `primary`, picks white or near-black `onPrimary`, and mixes `soft` from it |
 | `tokens` | no | Any of the tokens below. Later keys win over the preset, key by key |
-| `fonts` | no | `heading` and `body`: a Google Fonts family name. Uploaded fonts go in `fonts.files` with a `license` |
+| `fonts` | no | `heading` and `body`: a Google Fonts family name. Uploaded fonts go in `fonts.files` with a `license`, as a file in your package (`assets/…`) or a `https://fonts.gstatic.com/` link. Other hosts are refused, because they would see every customer who loads the page |
 | `corners` | no | `square`, `soft`, `round`, `circle`, or an object with all five corners in px |
 | `dark` | no | `true` for dark themes (used for the market preview and email header) |
 | `pages` | no | Level 2: `{ "service": "booking/service.html" }` and so on |
@@ -182,7 +182,7 @@ Everything from Level 2 still works. These are new:
 | `quote(serviceId, selection, answers?)` | `{ lines: [{ label, amountText }], totalText, upfront }`: the price for what the customer picked, in the business's currency. Pass `answers` when a [kind](#new-service-kinds-preview) prices add-ons from fields |
 | `getSlots(serviceId, date, tz, selection?)` | As before. With a `selection` (`{ minutes, quantity }`) it only returns starts where that fits, and each slot has `remaining` |
 | `hold(serviceId, start, selection?)` | As before, holding the length and quantity too |
-| `book({ holdId, guest, answers })` | Books it, and Octabiz opens **You're booked** itself. If the service is paid when booking, Octabiz takes the customer to Stripe's secure checkout instead, and back to **You're booked** once they've paid. Your page never sees card details |
+| `book({ holdId, guest, answers })` | Books it (`{ booked: true }`; your page never gets the booking's token), and Octabiz opens **You're booked** itself. If the service is paid when booking, Octabiz takes the customer to Stripe's secure checkout instead, and back to **You're booked** once they've paid. Your page never sees card details |
 
 `book()` errors, as `{ code, message }`: `SLOT_TAKEN`, `HOLD_EXPIRED`, `PAYMENT_FAILED`, and `FIELD_INVALID`, which also has `fields: { fieldId: sentence }`. As before, show `message` as it is.
 

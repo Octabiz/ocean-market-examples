@@ -187,7 +187,7 @@
       if (!check.ok) return fail('FIELD_INVALID', 'Some answers need another look.', { fields: check.errors });
       if (params.get('error') === 'payment') return fail('PAYMENT_FAILED', 'Your card was declined. Try another card, or pay with PayPal.');
       emit('booked', {});
-      return wait({ manageToken: 'mt_sample' }).then(function (r) { sdk.navigate('confirmed'); return r; });
+      return wait({ booked: true }).then(function (r) { sdk.navigate('confirmed'); return r; });
     },
     /** Level 2 name for book(); still works. */
     create: function () { emit('booked', {}); return wait({ appointment: { id: 'appt_sample' } }); },
