@@ -174,6 +174,10 @@ const REQUIRED = {
 };
 const NEEDS = { hub: ['powered'], book: ['timezone', 'cutoff', 'payment', 'form', 'terms', 'powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
 
+// Somewhere to type, other than choices: a text-like <input>, a <textarea> or editable content.
+const TEXT_ENTRY_HTML = /<textarea\b|\bcontenteditable\b|<input\b(?![^>]*\btype\s*=\s*["']?(?:radio|checkbox|range|button|hidden)\b)[^>]*>/i;
+const TEXT_ENTRY_JS = /createElement\(\s*["'](?:input|textarea)["']|\bcontentEditable\b|addEventListener\(\s*["'](?:keydown|keyup|keypress|beforeinput|paste)["']/;
+
 const FIELD_TYPES = ['text', 'textarea', 'email', 'phone', 'url', 'number', 'select', 'multiselect', 'checkbox', 'date'];
 const FIELD_KEYS = ['id', 'type', 'label', 'help', 'required', 'placeholder', 'options', 'display', 'min', 'max', 'step', 'unit', 'maxLength', 'dates', 'sensitive', 'appliesTo'];
 const RESERVED_FIELDS = ['name', 'email', 'phone', 'notes', 'guests', 'address'];
@@ -352,10 +356,15 @@ function validateBookingTheme(dir) {
       if (/\son[a-z]+\s*=/i.test(text)) safety.push(`${p}: on…= event attribute (use addEventListener)`);
       if (/<\s*(iframe|object|embed|base|form)\b/i.test(text)) safety.push(`${p}: <iframe>, <object>, <embed>, <base> and <form> aren't allowed`);
       for (const m of text.matchAll(/\b(?:src|href)\s*=\s*["']((?:https?:)?\/\/[^"']+)/gi)) safety.push(`${p}: loads ${m[1]} from another site`);
+      if (/<meta[^>]+http-equiv\s*=\s*["']?refresh/i.test(text)) safety.push(`${p}: <meta http-equiv="refresh"> moves the page`);
+      // Customers type only into Octabiz's own details form (data-bk="fields").
+      if (TEXT_ENTRY_HTML.test(text)) safety.push(`${p}: asks the customer to type something outside data-bk="fields"`);
     }
     if (/\.js$/i.test(p)) {
       if (/\b(fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon)\b/.test(text)) safety.push(`${p}: makes its own network requests (use window.octabizBooking)`);
       if (/\beval\s*\(|new\s+Function\s*\(|document\.cookie|localStorage|(top|parent)\.location/.test(text)) safety.push(`${p}: uses eval, cookies, storage or moves the page`);
+      if (/\blocation\s*(=|\.href\s*=|\.(assign|replace)\s*\()|\bwindow\.open\s*\(|document\.write/.test(text)) safety.push(`${p}: moves or rewrites its own page (use navigate())`);
+      if (TEXT_ENTRY_JS.test(text)) safety.push(`${p}: makes its own text inputs or listens to typing (customers type only in data-bk="fields")`);
       try { new vm.Script(text, { filename: p }); } catch (e) { safety.push(`${p}: ${e.message}`); }
     }
     if (/\.css$/i.test(p) && /@import|url\s*\(\s*["']?(https?:)?\/\//i.test(text)) safety.push(`${p}: loads CSS or images from another site`);

@@ -167,7 +167,7 @@ Octabiz fills these elements for you, in your tokens:
 | `<div data-bk="fields"></div>` | The customer's details: name, email, phone if the business asks for it, the business's own questions and your theme's [custom fields](#custom-fields-preview). It's Octabiz's own form, in a frame inside your page and drawn in your tokens. Your code can't read what the customer types; that goes straight to Octabiz |
 | `<div data-bk="payment"></div>` | When the service is paid when booking: the amount due, and a line saying payment happens on Stripe's secure page. Empty otherwise |
 
-Required on `book` (and on a [kind's page](#new-service-kinds-preview)): the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="fields"`, `data-bk="terms"` and `data-bk="powered-by"`. Don't draw your own inputs for the customer's details: a page can't book without Octabiz's form, and review sends back a page that asks for personal details anywhere else.
+Required on `book` (and on a [kind's page](#new-service-kinds-preview)): the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="fields"`, `data-bk="terms"` and `data-bk="powered-by"`. Don't draw your own inputs for the customer's details: a page can't book without Octabiz's form. `validate.mjs` and the upload check send back any text input, `<textarea>`, editable content or typing listener outside it, and any code that moves its own page (`location`, `window.open`, `<meta http-equiv="refresh">`). Choices are fine: radios, check boxes, ranges, buttons and `<select>`.
 
 ### The SDK, version 2
 
