@@ -110,10 +110,12 @@ Put page templates in `booking/`. Each one replaces one built-in page:
 | `hub` | `/book` | `org`, `services` |
 | `service` | `/book/:service` | `org`, `service`, `timezone`, `error` |
 | `details` | `/book/:service/details` | `org`, `service`, `hold`, `questions`, `timezone` |
-| `confirmed` | `/book/:service/confirmed` | `org`, `appointment`, `confirmationMessage`, `calendarLinks` |
-| `manage` | `/book/manage/:token` | `org`, `appointment`, `canChange`, `cutoffText` |
-| `change` | `/book/manage/:token/change` | `org`, `appointment`, `timezone` |
-| `cancel` | `/book/manage/:token/cancel` | `org`, `appointment`, `cancellationMessage`, `refundText` |
+| `confirmed` | `/book/manage/:token?booked=1` | `org`, `service`, `appointment`, `confirmationMessage` |
+| `manage` | `/book/manage/:token` | `org`, `service`, `appointment`, `canChange`, `cutoffText` |
+| `change` | `/book/manage/:token`, changing the time | `org`, `service`, `appointment`, `canChange`, `timezone` |
+| `cancel` | `/book/manage/:token`, cancelling | `org`, `service`, `appointment`, `canChange`, `cancellationMessage`, `refundText` |
+
+On the booking's own pages, `appointment` has `serviceName`, `hostName`, `start` and `end` (ISO, UTC), `timezone`, `dayText` (`Mon, Nov 2`) and `timeText` (`10:00am – 11:30am`) in the booking's time zone, `location.label`, `status` and `guest.firstName`. `canChange` is false inside the cancellation window, when changes are by phone. `confirmationMessage` is the business's own note (or empty), and `refundText` says what goes back to the customer's card (or is empty when nothing was paid). Put `<div data-bk="add-to-calendar"></div>` on `confirmed` for Google, Outlook and Apple calendar buttons; your page can't open those itself. These pages show on dev.octabiz.ai for now, and adding guests stays on the built-in page.
 
 `service` has `id`, `name`, `description`, `highlights` (a list), `durationMin`, `location.label`, `price`, `priceText` (for example `$25` or `Free`), `host.name` and `cutoffText`. `org` has `name`, `initial`, `phone`, `termsUrl` and `privacyUrl`.
 
@@ -129,9 +131,9 @@ Put code in a `.js` file in your package and load it with `<script src="booking/
 | `getSlots(serviceId, 'YYYY-MM-DD', tz)` | `[{ start, end }]` (ISO, UTC): open times for a day. For a group session each slot also has `spotsLeft`, counting seats other people are holding as taken |
 | `hold(serviceId, start)` | Holds a time for 10 minutes → `{ holdId, expiresAt }` |
 | `create(holdId, guest, answers)` | Books it, or returns a checkout URL for paid services |
-| `reschedule(token, start)` / `cancel(token, note?)` | Manage actions |
+| `reschedule(start)` / `cancel(note?)` | On `change` and `cancel`: moves the booking to a time from `getSlots`, or cancels it. Your page never gets the booking's token, so there's none to pass (the older `reschedule(token, start)` and `cancel(token, note)` still work and ignore it). Refused with `TOO_LATE` inside the cancellation window |
 | `setTimezone(tz)` · `formatTime(iso)` · `formatDay(iso)` | Time zone and labels in the customer's locale |
-| `navigate(step, params)` | Moves to another page with the right URL, e.g. `navigate('details', { hold })` |
+| `navigate(step, params)` | Moves to another page, e.g. `navigate('details', { hold })`, or `navigate('change')`, `navigate('cancel')` and `navigate('manage')` on the booking's own pages |
 | `on(event, fn)` | `'slot:selected'`, `'booked'`, `'rescheduled'`, `'cancelled'`. Analytics only |
 
 Errors come back as `{ code, message }`, and `message` is already a plain sentence for the customer, for example *"10:00am on Tue, Oct 6 was just booked by someone else. Pick another time."* Show it as it is.
