@@ -158,10 +158,10 @@ const PAGE_DATA = {
   service: ['org', 'service', 'timezone', 'error'],
   details: ['org', 'service', 'hold', 'questions', 'fields', 'timezone'],
   book: ['org', 'service', 'fields', 'timezone', 'error'],
-  confirmed: ['org', 'appointment', 'confirmationMessage', 'calendarLinks'],
-  manage: ['org', 'appointment', 'canChange', 'cutoffText'],
-  change: ['org', 'appointment', 'timezone'],
-  cancel: ['org', 'appointment', 'cancellationMessage', 'refundText'],
+  confirmed: ['org', 'service', 'appointment', 'confirmationMessage'],
+  manage: ['org', 'service', 'appointment', 'canChange', 'cutoffText'],
+  change: ['org', 'service', 'appointment', 'canChange', 'timezone'],
+  cancel: ['org', 'service', 'appointment', 'canChange', 'cancellationMessage', 'refundText'],
 };
 /** What review needs on each custom page (§7.3 of the booking themes spec). */
 const REQUIRED = {
