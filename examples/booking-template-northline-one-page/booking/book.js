@@ -125,16 +125,18 @@
   pay.addEventListener('click', function () {
     if (!held) return;
     say('nl-error');
-    var filled = bk.readFields();
-    if (!filled) return;
-    pay.setAttribute('aria-busy', 'true');
-    pay.textContent = 'Booking…';
-    bk.book({ holdId: held.holdId, guest: filled.guest, answers: filled.answers }).then(function () {
-      clearInterval(timer);
-      pay.removeAttribute('aria-busy');
-      pay.textContent = 'Booked';
-      pay.disabled = true;
-    }, function (e) {
+    // The details form is Octabiz's own: readFields() only says whether it's complete (it marks what's missing).
+    bk.readFields().then(function (complete) {
+      if (!complete) return;
+      pay.setAttribute('aria-busy', 'true');
+      pay.textContent = 'Booking…';
+      return bk.book({ holdId: held.holdId }).then(function () {
+        clearInterval(timer);
+        pay.removeAttribute('aria-busy');
+        pay.textContent = 'Booked';
+        pay.disabled = true;
+      });
+    }).catch(function (e) {
       pay.removeAttribute('aria-busy');
       pay.textContent = payLabel;
       say('nl-error', e.message);

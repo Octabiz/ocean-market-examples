@@ -145,12 +145,9 @@
   }
 
   // ---------------------------------------------------------------- price
-  function answersNow() {
-    var bags = document.querySelector('[data-bk="fields"] [name="dry_bags"]');
-    return { dry_bags: bags ? Number(bags.value) || 0 : 0 };
-  }
+  // The dry bags question is in Octabiz's details form: quote() reads it there, and the page hears when it changes.
   function requote() {
-    bk.quote(svc.id, { minutes: minutes, quantity: qty }, answersNow()).then(function (q) {
+    bk.quote(svc.id, { minutes: minutes, quantity: qty }).then(function (q) {
       quoted = q;
       var dl = $('by-lines');
       var rows = [];
@@ -163,24 +160,23 @@
   function setBookLabel() {
     if (held && quoted) book.textContent = quoted.upfront ? 'Pay ' + quoted.totalText + ' and book' : 'Book · pay ' + quoted.totalText + ' at the dock';
   }
-  document.querySelector('[data-bk="fields"]').addEventListener('input', function (e) {
-    if (e.target.name === 'dry_bags') requote();
-  });
+  bk.on('fields:change', requote);
 
   // ---------------------------------------------------------------- book
   book.addEventListener('click', function () {
     if (!held) return;
     say('by-error');
-    var filled = bk.readFields();
-    if (!filled) return;
-    book.setAttribute('aria-busy', 'true');
-    book.textContent = 'Booking…';
-    bk.book({ holdId: held.holdId, guest: filled.guest, answers: filled.answers }).then(function () {
-      clearInterval(timer);
-      book.removeAttribute('aria-busy');
-      book.textContent = 'Booked';
-      book.disabled = true;
-    }, function (e) {
+    bk.readFields().then(function (complete) {
+      if (!complete) return;
+      book.setAttribute('aria-busy', 'true');
+      book.textContent = 'Booking…';
+      return bk.book({ holdId: held.holdId }).then(function () {
+        clearInterval(timer);
+        book.removeAttribute('aria-busy');
+        book.textContent = 'Booked';
+        book.disabled = true;
+      });
+    }).catch(function (e) {
       book.removeAttribute('aria-busy');
       setBookLabel();
       say('by-error', e.message);

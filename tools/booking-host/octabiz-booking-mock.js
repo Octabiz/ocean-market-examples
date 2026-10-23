@@ -101,6 +101,33 @@
   }
 
   // ------------------------------------------------------------------ the SDK
+  // On Octabiz the details form is its own frame, and only the booking page reads it. Here it's drawn inline.
+  function readForm(show) {
+      var form = document.querySelector('[data-bk="fields"]');
+      if (!form) return null;
+      var answers = {};
+      (page.fields || []).forEach(function (f) {
+        var nodes = form.querySelectorAll('[name="' + f.id + '"]');
+        if (f.type === 'checkbox') answers[f.id] = !!(nodes[0] && nodes[0].checked);
+        else if (f.type === 'multiselect') answers[f.id] = [].filter.call(nodes, function (n) { return n.checked; }).map(function (n) { return n.value; });
+        else if (f.type === 'select' && f.display === 'chips') { var on = [].filter.call(nodes, function (n) { return n.checked; })[0]; answers[f.id] = on ? on.value : ''; }
+        else answers[f.id] = nodes[0] ? nodes[0].value.trim() : '';
+      });
+      var result = validateAll(answers);
+      if (show) form.querySelectorAll('[data-field]').forEach(function (wrap) {
+        var id = wrap.getAttribute('data-field');
+        var err = wrap.querySelector('.bkf-err');
+        wrap.toggleAttribute('data-invalid', !!result.errors[id]);
+        err.textContent = result.errors[id] || '';
+      });
+      if (!result.ok && show) {
+        var first = form.querySelector('[data-invalid] input, [data-invalid] textarea, [data-invalid] select');
+        if (first) first.focus();
+      }
+      ['name', 'email', 'phone'].forEach(function (k) { delete answers[k]; });
+      return { ok: result.ok, answers: answers };
+  }
+
   var sdk = {
     /** The page's data, read-only. */
     page: page,
@@ -148,43 +175,18 @@
     },
     /** Every field this booking asks for, in order. */
     getFields: function () { return wait(page.fields || []); },
-    /** Reads the data-bk="fields" form: { guest, answers }, or null after marking what's wrong. */
-    readFields: function () {
-      var form = document.querySelector('[data-bk="fields"]');
-      if (!form) return null;
-      var answers = {};
-      (page.fields || []).forEach(function (f) {
-        var nodes = form.querySelectorAll('[name="' + f.id + '"]');
-        if (f.type === 'checkbox') answers[f.id] = !!(nodes[0] && nodes[0].checked);
-        else if (f.type === 'multiselect') answers[f.id] = [].filter.call(nodes, function (n) { return n.checked; }).map(function (n) { return n.value; });
-        else if (f.type === 'select' && f.display === 'chips') { var on = [].filter.call(nodes, function (n) { return n.checked; })[0]; answers[f.id] = on ? on.value : ''; }
-        else answers[f.id] = nodes[0] ? nodes[0].value.trim() : '';
-      });
-      var result = validateAll(answers);
-      form.querySelectorAll('[data-field]').forEach(function (wrap) {
-        var id = wrap.getAttribute('data-field');
-        var err = wrap.querySelector('.bkf-err');
-        wrap.toggleAttribute('data-invalid', !!result.errors[id]);
-        err.textContent = result.errors[id] || '';
-      });
-      if (!result.ok) {
-        var first = form.querySelector('[data-invalid] input, [data-invalid] textarea, [data-invalid] select');
-        if (first) first.focus();
-        return null;
-      }
-      var guest = { name: answers.name, email: answers.email, phone: answers.phone };
-      ['name', 'email', 'phone'].forEach(function (k) { delete answers[k]; });
-      return { guest: guest, answers: answers };
-    },
+    /** Whether the details form is complete (it marks what's missing). Your page never gets the answers. */
+    readFields: function () { var f = readForm(true); return wait(!!(f && f.ok)); },
     /** The same check the server runs: { ok, errors: { fieldId: sentence } }. */
     validate: function (_serviceId, answers) { return wait(validateAll(answers || {})); },
     /** The price for what the customer picked, worked out by Octabiz. */
-    quote: function (_serviceId, selection, answers) { return wait(quoteFor(selection, answers)); },
+    quote: function (_serviceId, selection) { var f = readForm(false); return wait(quoteFor(selection, f ? f.answers : {})); },
     /** Books it. Paid-upfront services confirm the payment frame first. */
     book: function (input) {
       if (!input || !input.holdId) return fail('HOLD_EXPIRED', 'Your time was held for 10 minutes and it ran out. Pick the time again.');
-      var check = validateAll(Object.assign({}, input.answers, input.guest));
-      if (!check.ok) return fail('FIELD_INVALID', 'Some answers need another look.', { fields: check.errors });
+      var f = readForm(true);
+      if (!f) return fail('NO_FIELDS', 'This page has no details form, so it can’t take bookings.');
+      if (!f.ok) return fail('FIELD_INVALID', 'Some answers need another look.');
       if (params.get('error') === 'payment') return fail('PAYMENT_FAILED', 'Your card was declined. Try another card, or pay with PayPal.');
       emit('booked', {});
       return wait({ booked: true }).then(function (r) { sdk.navigate('confirmed'); return r; });
@@ -207,7 +209,7 @@
       bar.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:12px;font:14px system-ui;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.3)';
       bar.textContent = 'Octabiz would now open the "' + step + '" page' + (query && query.hold ? ' with hold ' + query.hold : '') + '.';
     },
-    /** Analytics only: 'slot:selected' | 'booked' | 'rescheduled' | 'cancelled'. Can't block the flow. */
+    /** 'slot:selected' | 'booked' | 'rescheduled' | 'cancelled' (analytics only), and 'fields:change'. */
     on: function (name, fn) { (listeners[name] = listeners[name] || []).push(fn); },
   };
   global.octabizBooking = sdk;
@@ -294,6 +296,7 @@
     document.querySelectorAll('[data-bk="fields"]').forEach(function (n) {
       n.classList.add('bkf');
       n.innerHTML = (page.fields || []).map(fieldHtml).join('');
+      n.addEventListener('input', function () { emit('fields:change', {}); });
     });
     document.querySelectorAll('[data-bk="payment"]').forEach(function (n) {
       if (!(service.price && service.price.upfront)) { n.hidden = true; return; }
@@ -304,7 +307,7 @@
     });
     // The built-in Your details page: Book it checks the fields the same way the server does.
     var bookIt = document.getElementById('bkp-book');
-    if (bookIt) bookIt.addEventListener('click', function () { if (sdk.readFields()) sdk.navigate('confirmed'); });
+    if (bookIt) bookIt.addEventListener('click', function () { sdk.readFields().then(function (ok) { if (ok) sdk.navigate('confirmed'); }); });
   }
   fill();
 })(window);

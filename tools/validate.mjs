@@ -170,8 +170,9 @@ const REQUIRED = {
   terms: [/data-bk=["']terms["']/, 'the Terms and Privacy line (data-bk="terms")'],
   powered: [/data-bk=["']powered-by["']/, '"Powered by Octabiz" (data-bk="powered-by")'],
   payment: [/data-bk=["']payment["']/, 'the payment frame (data-bk="payment")'],
+  form: [/data-bk=["']fields["']/, 'the details form (data-bk="fields")'],
 };
-const NEEDS = { hub: ['powered'], book: ['timezone', 'cutoff', 'payment', 'terms', 'powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
+const NEEDS = { hub: ['powered'], book: ['timezone', 'cutoff', 'payment', 'form', 'terms', 'powered'], service: ['timezone', 'cutoff', 'powered'], details: ['cutoff', 'terms', 'powered'], confirmed: ['powered'], manage: ['cutoff', 'powered'], change: ['timezone', 'powered'], cancel: ['powered'] };
 
 const FIELD_TYPES = ['text', 'textarea', 'email', 'phone', 'url', 'number', 'select', 'multiselect', 'checkbox', 'date'];
 const FIELD_KEYS = ['id', 'type', 'label', 'help', 'required', 'placeholder', 'options', 'display', 'min', 'max', 'step', 'unit', 'maxLength', 'dates', 'sensitive', 'appliesTo'];

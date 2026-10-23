@@ -115,7 +115,7 @@ Put page templates in `booking/`. Each one replaces one built-in page:
 | `change` | `/book/manage/:token`, changing the time | `org`, `service`, `appointment`, `canChange`, `timezone` |
 | `cancel` | `/book/manage/:token`, cancelling | `org`, `service`, `appointment`, `canChange`, `cancellationMessage`, `refundText` |
 
-On the booking's own pages, `appointment` has `serviceName`, `hostName`, `start` and `end` (ISO, UTC), `timezone`, `dayText` (`Mon, Nov 2`) and `timeText` (`10:00am – 11:30am`) in the booking's time zone, `location.label`, `status` and `guest.firstName`. `canChange` is false inside the cancellation window, when changes are by phone. `confirmationMessage` is the business's own note (or empty), and `refundText` says what goes back to the customer's card (or is empty when nothing was paid). Put `<div data-bk="add-to-calendar"></div>` on `confirmed` for Google, Outlook and Apple calendar buttons; your page can't open those itself. These pages show on dev.octabiz.ai for now, and adding guests stays on the built-in page.
+On the booking's own pages, `appointment` has `serviceName`, `hostName`, `start` and `end` (ISO, UTC), `timezone`, `dayText` (`Mon, Nov 2`) and `timeText` (`10:00am – 11:30am`) in the booking's time zone, `location.label` (the service's place) and `status`. Nothing about the customer reaches these pages: no name, email or address. `canChange` is false inside the cancellation window, when changes are by phone. `confirmationMessage` is the business's own note (or empty), and `refundText` says what goes back to the customer's card (or is empty when nothing was paid). Put `<div data-bk="add-to-calendar"></div>` on `confirmed` for Google, Outlook and Apple calendar buttons; your page can't open those itself. These pages show on dev.octabiz.ai for now, and adding guests stays on the built-in page.
 
 `service` has `id`, `name`, `description`, `highlights` (a list), `durationMin`, `location.label`, `price`, `priceText` (for example `$25` or `Free`), `host.name` and `cutoffText`. `org` has `name`, `initial`, `phone`, `termsUrl` and `privacyUrl`.
 
@@ -134,7 +134,7 @@ Put code in a `.js` file in your package and load it with `<script src="booking/
 | `reschedule(start)` / `cancel(note?)` | On `change` and `cancel`: moves the booking to a time from `getSlots`, or cancels it. Your page never gets the booking's token, so there's none to pass (the older `reschedule(token, start)` and `cancel(token, note)` still work and ignore it). Refused with `TOO_LATE` inside the cancellation window |
 | `setTimezone(tz)` · `formatTime(iso)` · `formatDay(iso)` | Time zone and labels in the customer's locale |
 | `navigate(step, params)` | Moves to another page, e.g. `navigate('details', { hold })`, or `navigate('change')`, `navigate('cancel')` and `navigate('manage')` on the booking's own pages |
-| `on(event, fn)` | `'slot:selected'`, `'booked'`, `'rescheduled'`, `'cancelled'`. Analytics only |
+| `on(event, fn)` | `'slot:selected'`, `'booked'`, `'rescheduled'`, `'cancelled'` (analytics only), and `'fields:change'` when the customer edits the details form |
 
 Errors come back as `{ code, message }`, and `message` is already a plain sentence for the customer, for example *"10:00am on Tue, Oct 6 was just booked by someone else. Pick another time."* Show it as it is.
 
@@ -164,10 +164,10 @@ Octabiz fills these elements for you, in your tokens:
 | Element | What appears |
 | --- | --- |
 | `<div data-bk="description"></div>` | The business's formatted description: paragraphs, bold, lists and links, cleaned by Octabiz. Template values are always escaped, so this is the only way to show formatting |
-| `<div data-bk="fields"></div>` | The customer's details: name, email, phone if the business asks for it, the business's own questions and your theme's [custom fields](#custom-fields-preview) |
+| `<div data-bk="fields"></div>` | The customer's details: name, email, phone if the business asks for it, the business's own questions and your theme's [custom fields](#custom-fields-preview). It's Octabiz's own form, in a frame inside your page and drawn in your tokens. Your code can't read what the customer types; that goes straight to Octabiz |
 | `<div data-bk="payment"></div>` | When the service is paid when booking: the amount due, and a line saying payment happens on Stripe's secure page. Empty otherwise |
 
-Required on `book`: the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="terms"` and `data-bk="powered-by"`. If you leave out `data-bk="fields"`, draw your own inputs from `getFields()` and send the answers yourself.
+Required on `book` (and on a [kind's page](#new-service-kinds-preview)): the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="fields"`, `data-bk="terms"` and `data-bk="powered-by"`. Don't draw your own inputs for the customer's details: a page can't book without Octabiz's form, and review sends back a page that asks for personal details anywhere else.
 
 ### The SDK, version 2
 
@@ -177,14 +177,16 @@ Everything from Level 2 still works. These are new:
 | --- | --- |
 | `page` | The page data above, read-only. Handy for the parts a template can't loop over |
 | `getFields(serviceId)` | `[{ id, type, label, help, required, options, … }]`: every field this booking asks for, in order |
-| `readFields()` | Reads the `data-bk="fields"` form. Returns `{ guest, answers }`, or `null` after marking what's missing or wrong on the form |
-| `validate(serviceId, answers)` | `{ ok, errors: { fieldId: sentence } }`, the same check the server runs. For pages that draw their own inputs |
-| `quote(serviceId, selection, answers?)` | `{ lines: [{ label, amountText }], totalText, upfront }`: the price for what the customer picked, in the business's currency. Pass `answers` when a [kind](#new-service-kinds-preview) prices add-ons from fields |
+| `readFields()` | Checks the `data-bk="fields"` form: a promise of `true` when it's complete, or `false` after the form marks what's missing or wrong. You never get the answers themselves |
+| `validate(serviceId, answers)` | `{ ok, errors: { fieldId: sentence } }`, the same check the server runs, for sample answers in your own preview |
+| `quote(serviceId, selection)` | `{ lines: [{ label, amountText }], totalText, upfront }`: the price for what the customer picked, in the business's currency. A [kind](#new-service-kinds-preview) that prices add-ons from fields reads them from the form itself. Call it again on `on('fields:change')` |
 | `getSlots(serviceId, date, tz, selection?)` | As before. With a `selection` (`{ minutes, quantity }`) it only returns starts where that fits, and each slot has `remaining` |
 | `hold(serviceId, start, selection?)` | As before, holding the length and quantity too |
-| `book({ holdId, guest, answers })` | Books it (`{ booked: true }`; your page never gets the booking's token), and Octabiz opens **You're booked** itself. If the service is paid when booking, Octabiz takes the customer to Stripe's secure checkout instead, and back to **You're booked** once they've paid. Your page never sees card details |
+| `book({ holdId })` | Books the held time for the customer in the `data-bk="fields"` form (`{ booked: true }`; your page never gets the booking's token), and Octabiz opens **You're booked** itself. If the service is paid when booking, Octabiz takes the customer to Stripe's secure checkout instead, and back to **You're booked** once they've paid. Your page never sees card details |
 
-`book()` errors, as `{ code, message }`: `SLOT_TAKEN`, `HOLD_EXPIRED`, `PAYMENT_FAILED`, and `FIELD_INVALID`, which also has `fields: { fieldId: sentence }`. As before, show `message` as it is.
+`book()` errors, as `{ code, message }`: `SLOT_TAKEN`, `HOLD_EXPIRED`, `PAYMENT_FAILED`, `NO_FIELDS` (the page has no `data-bk="fields"`), and `FIELD_INVALID`. The form shows each problem under its question, and `fields: { fieldId: sentence }` has the same sentences. As before, show `message` as it is.
+
+`on('fields:change', fn)` tells your page the customer changed something in the form, with no details, so you can call `quote()` again.
 
 ## Custom fields (preview)
 
@@ -218,7 +220,7 @@ Up to 20 fields. When a business installs your theme it can turn each field off,
 
 What Octabiz does with the answers:
 
-- **Checks them on the server** against your definition (type, required, options, limits), whether they came from `data-bk="fields"` or your own inputs.
+- **Checks them on the server** against your definition (type, required, options, limits), from the `data-bk="fields"` form.
 - **Stores them with the appointment.** Staff see them on the appointment, in exports and in reports, under your field's label.
 - **Prints them in emails** as `{{ answers.pet_name }}` when the business edits its confirmation, unless the field is `sensitive`.
 - **Keeps them** if the theme is removed later. The fields stop showing, and past answers stay on their appointments.
