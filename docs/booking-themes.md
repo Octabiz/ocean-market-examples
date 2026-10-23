@@ -14,7 +14,7 @@ There are two levels, and three extras you can add to either:
 
 > **Where each extra stands.**
 > * **Custom fields** are live. A business can turn your questions off, or make them optional, per service.
-> * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. A service paid when booking goes to Stripe's checkout from your page. A group session still uses the built-in page.
+> * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. A service paid when booking goes to Stripe's checkout from your page. A group session opens on your page too, and picking a session holds one seat for 10 minutes.
 > * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on dev.octabiz.ai for now. A kind paid when booking (`pricing.upfront`) goes to Stripe's checkout too, for the total its quote shows. `one` and `seats` kinds come later.
 > `preview.mjs` and `validate.mjs` support all of it today.
 
@@ -126,7 +126,7 @@ Put code in a `.js` file in your package and load it with `<script src="booking/
 | Call | Does |
 | --- | --- |
 | `getMonth(serviceId, 'YYYY-MM', tz)` | `[{ date, open }]`: days with open times |
-| `getSlots(serviceId, 'YYYY-MM-DD', tz)` | `[{ start, end }]` (ISO, UTC): open times for a day |
+| `getSlots(serviceId, 'YYYY-MM-DD', tz)` | `[{ start, end }]` (ISO, UTC): open times for a day. For a group session each slot also has `spotsLeft`, counting seats other people are holding as taken |
 | `hold(serviceId, start)` | Holds a time for 10 minutes → `{ holdId, expiresAt }` |
 | `create(holdId, guest, answers)` | Books it, or returns a checkout URL for paid services |
 | `reschedule(token, start)` / `cancel(token, note?)` | Manage actions |
