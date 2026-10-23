@@ -298,9 +298,9 @@
     document.querySelectorAll('[data-bk="payment"]').forEach(function (n) {
       if (!(service.price && service.price.upfront)) { n.hidden = true; return; }
       n.classList.add('bkf-pay');
-      n.innerHTML = '<div class="bkf-pay-box" aria-label="Card details (sample)">' +
-        '<div class="bkf-pay-row">Card number</div><div class="bkf-pay-row bkf-pay-split"><span>MM / YY</span><span>CVC</span></div></div>' +
-        '<p class="bkf-pay-note">Octabiz’s secure payment frame. Your page never sees card details.</p>';
+      // As on Octabiz: the amount, and payment on Stripe's page after book(). No card fields on your page.
+      n.innerHTML = '<div class="bkf-pay-box"><div class="bkf-pay-row"><b style="color:var(--bk-ink)">' + esc(service.priceText) + '</b>&nbsp;due now</div></div>' +
+        '<p class="bkf-pay-note">After you press Book, you pay by card on Stripe’s secure page. Your card details never reach this page.</p>';
     });
     // The built-in Your details page: Book it checks the fields the same way the server does.
     var bookIt = document.getElementById('bkp-book');

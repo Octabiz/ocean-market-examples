@@ -2,7 +2,7 @@
 
 A coaching call sold and booked on one page. The left side is the pitch: cover image, price, the business's own description and what the customer leaves with. On the right, one card has the whole booking in order: pick a time, answer four questions, pay. Nothing opens a new page until the customer is booked.
 
-> Uses the `book` page and custom fields, which the developer portal accepts. Businesses see `book` pages on dev.octabiz.ai for now, while their security review finishes. A service paid when booking keeps the built-in page until the payment frame ships. See [docs/booking-themes.md](../../docs/booking-themes.md#one-page-booking-the-book-page-preview).
+> Uses the `book` page and custom fields, which the developer portal accepts. Businesses see `book` pages on dev.octabiz.ai for now, while their security review finishes. Because the call is paid when booking, **Pay** takes the customer to Stripe's secure checkout. See [docs/booking-themes.md](../../docs/booking-themes.md#one-page-booking-the-book-page-preview).
 
 <img alt="Northline at 1440px: the cover, title, price and description on the left, the calendar and times on the right" src="screenshots/page.png">
 
@@ -35,7 +35,7 @@ preview/cover.svg   the sample business's cover image (not uploaded: covers belo
 - **Octabiz fills three parts in your tokens:**
   - `data-bk="description"`: the business's formatted text. Template values are always escaped, so this is how bold text and lists get through.
   - `data-bk="fields"`: name, email and the four questions from `fields` in `theme.json`.
-  - `data-bk="payment"`: the card frame. Your page never sees card details.
+  - `data-bk="payment"`: the amount due. **Pay** then sends the customer to Stripe's checkout, so your page never sees card details.
 - **Hold on pick.** Clicking a time calls `hold()` straight away, so the time can't go while the customer types. A countdown shows how long is left, and when it runs out the page asks for the time again.
 - **One call to finish.** **Pay** calls `readFields()`. That returns `null` and marks the form when something is missing. Otherwise it calls `book()`, which takes the payment and then opens **You're booked**.
 - **A cover that may not exist.** Templates can't leave out an `<img>`, so `book.js` removes it when the business has no cover.

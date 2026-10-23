@@ -14,7 +14,7 @@ There are two levels, and three extras you can add to either:
 
 > **Where each extra stands.**
 > * **Custom fields** are live. A business can turn your questions off, or make them optional, per service.
-> * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. Until the payment frame ships, a service paid when booking, or a group session, uses the built-in page.
+> * **`book` and your own `service` page** are accepted on upload. For now they show only on dev.octabiz.ai, while their security review finishes. A service paid when booking goes to Stripe's checkout from your page. A group session still uses the built-in page.
 > * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on dev.octabiz.ai for now. A kind paid when booking waits for the payment frame. `one` and `seats` kinds come later.
 > `preview.mjs` and `validate.mjs` support all of it today.
 
@@ -163,7 +163,7 @@ Octabiz fills these elements for you, in your tokens:
 | --- | --- |
 | `<div data-bk="description"></div>` | The business's formatted description: paragraphs, bold, lists and links, cleaned by Octabiz. Template values are always escaped, so this is the only way to show formatting |
 | `<div data-bk="fields"></div>` | The customer's details: name, email, phone if the business asks for it, the business's own questions and your theme's [custom fields](#custom-fields-preview) |
-| `<div data-bk="payment"></div>` | Octabiz's payment frame (card, Apple Pay, Google Pay, PayPal) when the service is paid upfront. Empty otherwise. Your code never sees card details |
+| `<div data-bk="payment"></div>` | When the service is paid when booking: the amount due, and a line saying payment happens on Stripe's secure page. Empty otherwise |
 
 Required on `book`: the time zone picker, `{{ service.cutoffText }}`, `data-bk="payment"`, `data-bk="terms"` and `data-bk="powered-by"`. If you leave out `data-bk="fields"`, draw your own inputs from `getFields()` and send the answers yourself.
 
@@ -180,7 +180,7 @@ Everything from Level 2 still works. These are new:
 | `quote(serviceId, selection, answers?)` | `{ lines: [{ label, amountText }], totalText, upfront }`: the price for what the customer picked, in the business's currency. Pass `answers` when a [kind](#new-service-kinds-preview) prices add-ons from fields |
 | `getSlots(serviceId, date, tz, selection?)` | As before. With a `selection` (`{ minutes, quantity }`) it only returns starts where that fits, and each slot has `remaining` |
 | `hold(serviceId, start, selection?)` | As before, holding the length and quantity too |
-| `book({ holdId, guest, answers })` | Books it. If the service is paid upfront it first confirms the payment frame. On success Octabiz opens **You're booked** itself |
+| `book({ holdId, guest, answers })` | Books it, and Octabiz opens **You're booked** itself. If the service is paid when booking, Octabiz takes the customer to Stripe's secure checkout instead, and back to **You're booked** once they've paid. Your page never sees card details |
 
 `book()` errors, as `{ code, message }`: `SLOT_TAKEN`, `HOLD_EXPIRED`, `PAYMENT_FAILED`, and `FIELD_INVALID`, which also has `fields: { fieldId: sentence }`. As before, show `message` as it is.
 
