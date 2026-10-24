@@ -133,7 +133,7 @@ Put code in a `.js` file in your package and load it with `<script src="booking/
 | `create(holdId, guest, answers)` | Books it, or returns a checkout URL for paid services |
 | `reschedule(start)` / `cancel(note?)` | On `change` and `cancel`: moves the booking to a time from `getSlots`, or cancels it. Your page never gets the booking's token, so there's none to pass (the older `reschedule(token, start)` and `cancel(token, note)` still work and ignore it). Refused with `TOO_LATE` inside the cancellation window |
 | `setTimezone(tz)` · `formatTime(iso)` · `formatDay(iso)` | Time zone and labels in the customer's locale |
-| `navigate(step, params)` | Moves to another page, e.g. `navigate('details', { hold })`, or `navigate('change')`, `navigate('cancel')` and `navigate('manage')` on the booking's own pages |
+| `navigate(step, params)` | Moves to another page, e.g. `navigate('details', { hold })`, or `navigate('change')`, `navigate('cancel')` and `navigate('manage')` on the booking's own pages. `navigate('guests')` opens Octabiz's own panel for adding guests (their emails never reach your page) |
 | `on(event, fn)` | `'slot:selected'`, `'booked'`, `'rescheduled'`, `'cancelled'` (analytics only), and `'fields:change'` when the customer edits the details form |
 
 Errors come back as `{ code, message }`, and `message` is already a plain sentence for the customer, for example *"10:00am on Tue, Oct 6 was just booked by someone else. Pick another time."* Show it as it is.
