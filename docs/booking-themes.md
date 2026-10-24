@@ -15,7 +15,7 @@ There are two levels, and three extras you can add to either:
 > **Where each extra stands.**
 > * **Custom fields** are live. A business can turn your questions off, or make them optional, per service.
 > * **`book` and your own `service` page** are accepted on upload and show on the business's booking page. A service paid when booking goes to Stripe's checkout from your page. A group session opens on your page too, and picking a session holds one seat for 10 minutes.
-> * **`serviceKinds`** are accepted when `capacity.mode` is `units` (rentals), and show on the business's booking page. A kind paid when booking (`pricing.upfront`) goes to Stripe's checkout too, for the total its quote shows. `one` and `seats` kinds come later.
+> * **`serviceKinds`** are accepted for every `capacity.mode` (`one`, `seats` and `units`) and show on the business's booking page. A kind paid when booking (`pricing.upfront`) goes to Stripe's checkout too, for the total its quote shows.
 > `preview.mjs` and `validate.mjs` support all of it today.
 
 The full contract also lives at [octabiz.ai/developers/docs/booking-themes](https://octabiz.ai/developers/docs/booking-themes), and you can try any `theme.json` in the [theme playground](https://octabiz.ai/developers/booking-theme-playground).
@@ -255,7 +255,7 @@ Octabiz has appointments, classes, visits and walk-ins built in. `serviceKinds` 
 | --- | --- |
 | `id`, `name`, `description`, `icon` | How the kind appears when a business adds a service. `icon` is a [Lucide](https://lucide.dev/icons) name |
 | `time.mode` | `fixed`: the business sets the length (`maps: "time.minutes"`). `choice`: the customer picks from `options` (minutes). `range`: the customer picks between `minMinutes` and `maxMinutes` in `stepMinutes` |
-| `capacity.mode` | `one`: one booking per time. `seats`: a group shares a time, up to `total` people. `units`: a pool of `total` items, and bookings overlap until the pool runs out |
+| `capacity.mode` | `one`: one booking at a time. `seats`: a group shares a time, up to `total` people, and a booking takes up to `maxPerBooking` seats. `units`: a pool of `total` items, and bookings overlap until the pool runs out. Overlapping bookings share seats and units the same way. `unitLabel` is needed for `units`; seats are called "seat" and `one` uses the kind's name unless you say otherwise |
 | `pricing.per` | Any of `booking`, `person`, `unit` and `hour`. The price is `rate` times each one you list |
 | `pricing.upfront` | `true` to take payment when the customer books. Otherwise they pay at the visit |
 | `pricing.addOns` | Extras priced from a field: a `number` field adds `each` × the answer, a `checkbox` adds `each` once |
