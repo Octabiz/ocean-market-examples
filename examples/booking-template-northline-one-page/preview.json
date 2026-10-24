@@ -1,0 +1,26 @@
+{
+  "org": { "name": "Northline Coaching", "initial": "N", "phone": "+1 (647) 555-0198" },
+  "service": {
+    "id": "svc_strategy_call",
+    "slug": "career-strategy-call",
+    "name": "Career strategy call",
+    "description": "One hour to work out your next move, and leave with a written 90-day plan.",
+    "descriptionHtml": "<p>Stuck between staying and leaving, or applying everywhere and hearing nothing back? In one hour we work out what you actually want next, and what's in the way.</p><p>Before the call I read your profile and the answers you give below, so we start on the real question, not your CV.</p><p><strong>Who it's for:</strong> people a few years into their career who want a promotion, a switch, or a way back in after time off.</p>",
+    "highlights": [
+      "A written 90-day plan in your inbox the same evening",
+      "Notes on your profile and the one change that matters most",
+      "Three people or teams worth reaching out to, and what to say",
+      "A follow-up email two weeks later to check how it's going"
+    ],
+    "durationMin": 60,
+    "location": { "type": "video", "label": "Video call, link in your confirmation" },
+    "price": { "amount": 180, "currency": "USD", "upfront": true },
+    "priceText": "$180",
+    "cover": { "url": "preview/cover.svg", "alt": "A printed 90-day plan with three milestones circled" },
+    "host": { "name": "Leah Brennan" },
+    "cutoffText": "Move or cancel for a full refund up to 24 hours before."
+  },
+  "businessFields": [],
+  "guest": { "name": "Omar Haddad", "email": "omar.haddad@fastmail.com" },
+  "confirmationMessage": "Your plan template is attached. Fill in the first page if you have ten minutes before we talk."
+}

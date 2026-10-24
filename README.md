@@ -1,6 +1,6 @@
 # Ocean Market examples
 
-Complete, working examples of everything you can build for **Ocean Market**, the Octabiz app store: embedded apps, landing page templates, store themes and booking themes. The first four are real listings that went through Octabiz review; the two booking examples are new and pass every upload check. Download the repo, run an example on your computer, change it, and submit your own.
+Complete, working examples of everything you can build for **Ocean Market**, the Octabiz app store: embedded apps, landing page templates, store themes and booking themes. The first four are real listings that went through Octabiz review. Clay Studio and Flow Yoga are newer and pass every upload check. The last three use the newest parts of the booking contract: one-page booking and custom fields, which the developer portal accepts, and new service kinds, which it doesn't accept yet. See [docs/booking-themes.md](docs/booking-themes.md) for where each one stands. Download the repo, run an example on your computer, change it, and submit your own.
 
 <table>
   <tr>
@@ -15,6 +15,14 @@ Complete, working examples of everything you can build for **Ocean Market**, the
     <td><a href="examples/booking-theme-clay-studio"><img alt="Clay Studio" src="examples/booking-theme-clay-studio/screenshots/time-picked.png"></a><br><b>Clay Studio</b> · booking theme</td>
     <td><a href="examples/booking-template-flow-yoga"><img alt="Flow Yoga" src="examples/booking-template-flow-yoga/screenshots/service-page.png"></a><br><b>Flow Yoga</b> · booking page template</td>
   </tr>
+  <tr>
+    <td><a href="examples/booking-template-northline-one-page"><img alt="Northline" src="examples/booking-template-northline-one-page/screenshots/page.png"></a><br><b>Northline</b> · one-page booking (preview)</td>
+    <td><a href="examples/booking-kind-bayline-rentals"><img alt="Bayline" src="examples/booking-kind-bayline-rentals/screenshots/page.png"></a><br><b>Bayline</b> · new service kind: rentals (preview)</td>
+  </tr>
+  <tr>
+    <td><a href="examples/booking-fields-paws-grooming"><img alt="Paws &amp; Suds" src="examples/booking-fields-paws-grooming/screenshots/details.png"></a><br><b>Paws &amp; Suds</b> · custom booking fields (preview)</td>
+    <td></td>
+  </tr>
 </table>
 
 | Example | What it is | What it shows you |
@@ -25,6 +33,9 @@ Complete, working examples of everything you can build for **Ocean Market**, the
 | [Harbor Linen](examples/store-theme-harbor-linen) | Store theme | Every theme token, font and radius, with readable contrast |
 | [Clay Studio](examples/booking-theme-clay-studio) | Booking theme (tokens only) | Restyling every booking page from one `theme.json`: `extends`, the accent shortcut, corner sets, and settings a business picks on install |
 | [Flow Yoga](examples/booking-template-flow-yoga) | Booking page template | Replacing the service page with your own HTML, page data, open times and holds through `window.octabizBooking`, and the elements review requires |
+| [Northline](examples/booking-template-northline-one-page) | One-page booking (preview) | The `book` page: pitch, times, details and payment on one screen; holding a time on pick; the description, fields and payment parts Octabiz fills |
+| [Paws & Suds](examples/booking-fields-paws-grooming) | Custom fields (preview) | Nine questions on the built-in details page from `theme.json` alone: chips, units, limits, a past-only date, a sensitive field and a required consent |
+| [Bayline](examples/booking-kind-bayline-rentals) | New service kind (preview) | An "Equipment rental" kind: a length the customer picks, a shared pool of items, price per item per hour with add-ons, the business's setup form and its own page |
 
 ## What you need
 
@@ -51,6 +62,11 @@ node tools/preview.mjs examples/store-theme-harbor-linen
 # Preview a booking theme on every booking screen (add ?error=taken to see SLOT_TAKEN)
 node tools/preview.mjs examples/booking-theme-clay-studio
 node tools/preview.mjs examples/booking-template-flow-yoga
+
+# Preview contract: one-page booking, custom fields, a new service kind
+node tools/preview.mjs examples/booking-template-northline-one-page
+node tools/preview.mjs examples/booking-fields-paws-grooming
+node tools/preview.mjs examples/booking-kind-bayline-rentals
 ```
 
 ## The workflow
@@ -74,7 +90,7 @@ node tools/preview.mjs examples/booking-template-flow-yoga
 - **Embedded apps** run in a sandboxed frame inside Octabiz. Octabiz serves the exact build it reviewed, from its own servers, so businesses always run the reviewed code. Your app never gets a login token or a database connection. It asks Octabiz for data through a small, permission-checked message bridge. See [docs/embedded-apps.md](docs/embedded-apps.md).
 - **Landing page templates** are HTML and CSS sections with settings. Businesses add them in the page builder and edit every setting there: text, images, colours, links and lists. See [docs/landing-templates.md](docs/landing-templates.md).
 - **Store themes** are a set of colour, font and corner-radius tokens for a business's booking site and online store. See [docs/store-themes.md](docs/store-themes.md).
-- **Booking themes** restyle the pages customers book appointments on. A `theme.json` of tokens restyles every built-in page; add your own HTML pages to replace any of them. Open times, holds and payments always come from Octabiz through `window.octabizBooking`. See [docs/booking-themes.md](docs/booking-themes.md).
+- **Booking themes** restyle the pages customers book appointments on. A `theme.json` of tokens restyles every built-in page; add your own HTML pages to replace any of them. In preview: one `book` page for the whole booking, custom `fields`, and new `serviceKinds`. Open times, holds and payments always come from Octabiz through `window.octabizBooking`. See [docs/booking-themes.md](docs/booking-themes.md).
 
 Before you submit, read [docs/review-guidelines.md](docs/review-guidelines.md). It covers what reviewers check and the most common reasons a version is sent back.
 

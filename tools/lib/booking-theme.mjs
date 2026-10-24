@@ -4,7 +4,7 @@
 export const PRESET_NAMES = ['octabiz', 'clean', 'studio', 'night'];
 export const CORNER_SET_NAMES = ['square', 'soft', 'round', 'circle'];
 export const TOKEN_KEYS = ['page', 'surface', 'ink', 'muted', 'line', 'primary', 'onPrimary', 'soft', 'cta', 'onCta', 'shadow'];
-export const PAGE_KEYS = ['hub', 'service', 'details', 'confirmed', 'manage', 'change', 'cancel'];
+export const PAGE_KEYS = ['hub', 'service', 'details', 'book', 'confirmed', 'manage', 'change', 'cancel'];
 
 export const CORNER_SETS = {
   square: { card: '0px', control: '0px', button: '0px', day: '0px', area: '0px' },

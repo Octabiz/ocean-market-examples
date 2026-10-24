@@ -1,0 +1,60 @@
+{
+  "$schema": "https://octabiz.ai/schemas/booking-theme.v2.json",
+  "name": "Bayline Rentals",
+  "version": "1.0.0",
+  "extends": "clean",
+  "tokens": {
+    "page": "#ecf0ed",
+    "surface": "#ffffff",
+    "ink": "#0f2430",
+    "muted": "#4c5f6b",
+    "line": "#d3dcdc",
+    "primary": "#0b5c73",
+    "onPrimary": "#ffffff",
+    "soft": "#d9eef1",
+    "cta": "#b93d0b",
+    "onCta": "#ffffff",
+    "shadow": "0 24px 50px -40px rgba(15,36,48,.55)"
+  },
+  "fonts": {
+    "heading": "Archivo",
+    "body": "Work Sans"
+  },
+  "corners": "soft",
+  "fields": [
+    { "id": "experience", "type": "select", "display": "chips", "label": "Paddled before?", "required": true, "options": ["First time", "A few times", "Often"], "help": "First-timers get a 10-minute lesson at the dock.", "appliesTo": ["rental"] },
+    { "id": "dry_bags", "type": "number", "label": "Dry bags", "help": "For phones and keys. Each one fits a small backpack's worth.", "min": 0, "max": 6, "step": 1, "appliesTo": ["rental"] },
+    { "id": "waiver", "type": "checkbox", "label": "I've read the rental waiver and everyone in my group can swim", "required": true, "appliesTo": ["rental"] }
+  ],
+  "serviceKinds": [
+    {
+      "id": "rental",
+      "name": "Equipment rental",
+      "description": "Customers rent a number of items for a few hours. Bookings share your stock until it runs out.",
+      "icon": "sailboat",
+      "time": { "mode": "range", "minMinutes": 120, "maxMinutes": 480, "stepMinutes": 60 },
+      "capacity": { "mode": "units", "unitLabel": "kayak", "unitLabelPlural": "kayaks" },
+      "pricing": {
+        "per": ["unit", "hour"],
+        "rate": "settings.hourly_rate",
+        "upfront": false,
+        "addOns": [{ "field": "dry_bags", "each": "settings.dry_bag_price", "label": "Dry bags" }]
+      },
+      "settings": [
+        { "id": "units_total", "type": "number", "label": "How many do you rent out?", "default": 12, "maps": "capacity.total" },
+        { "id": "max_per_booking", "type": "number", "label": "Most one customer can book at once", "default": 6, "maps": "capacity.maxPerBooking" },
+        { "id": "hourly_rate", "type": "money", "label": "Price for one, per hour", "default": 18 },
+        { "id": "dry_bag_price", "type": "money", "label": "Dry bag, each", "default": 4 }
+      ],
+      "page": "booking/rental.html",
+      "example": {
+        "name": "Sit-on-top kayak",
+        "description": "Stable, wide kayaks that are hard to tip. Paddles and life jackets are included, in every size."
+      }
+    }
+  ],
+  "settings": [
+    { "id": "accent", "type": "color", "label": "Accent", "default": "#0b5c73", "maps": "tokens.primary" },
+    { "id": "shape", "type": "select", "label": "Corners", "options": ["square", "soft", "round"], "default": "soft", "maps": "corners" }
+  ]
+}

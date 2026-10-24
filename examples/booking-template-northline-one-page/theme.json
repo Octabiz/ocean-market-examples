@@ -1,0 +1,37 @@
+{
+  "$schema": "https://octabiz.ai/schemas/booking-theme.v2.json",
+  "name": "Northline One-Page",
+  "version": "1.0.0",
+  "extends": "clean",
+  "tokens": {
+    "page": "#f4efe5",
+    "surface": "#fffdf8",
+    "ink": "#1b2229",
+    "muted": "#57606a",
+    "line": "#e2dacb",
+    "primary": "#9a3412",
+    "onPrimary": "#ffffff",
+    "soft": "#f6e5d8",
+    "cta": "#1b2229",
+    "onCta": "#fffdf8",
+    "shadow": "0 28px 60px -44px rgba(27,34,41,.5)"
+  },
+  "fonts": {
+    "heading": "Instrument Serif",
+    "body": "Public Sans"
+  },
+  "corners": "soft",
+  "pages": {
+    "book": "booking/book.html"
+  },
+  "fields": [
+    { "id": "profile_url", "type": "url", "label": "Link to your LinkedIn or portfolio", "help": "Read before the call, so we don't spend the hour on background.", "required": true, "placeholder": "https://" },
+    { "id": "current_role", "type": "text", "label": "What do you do now?", "required": true, "maxLength": 120, "placeholder": "Senior designer at a payments company" },
+    { "id": "stage", "type": "select", "display": "chips", "label": "Where are you right now?", "required": true, "options": ["Growing in my role", "Looking to switch", "Coming back after a break", "Starting out"] },
+    { "id": "goal", "type": "textarea", "label": "What would make this hour worth it?", "maxLength": 600 }
+  ],
+  "settings": [
+    { "id": "accent", "type": "color", "label": "Accent", "default": "#9a3412", "maps": "tokens.primary" },
+    { "id": "shape", "type": "select", "label": "Corners", "options": ["square", "soft", "round"], "default": "soft", "maps": "corners" }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://octabiz.ai/schemas/booking-theme.v2.json",
+  "name": "Paws & Suds",
+  "version": "1.0.0",
+  "extends": "clean",
+  "tokens": {
+    "page": "#f6f1e7",
+    "surface": "#ffffff",
+    "ink": "#1d2b2a",
+    "muted": "#55625f",
+    "line": "#e2dbcd",
+    "primary": "#0f6b5f",
+    "onPrimary": "#ffffff",
+    "soft": "#ddefe9",
+    "cta": "#1d2b2a",
+    "onCta": "#ffffff",
+    "shadow": "0 30px 60px -46px rgba(29,43,42,.55)"
+  },
+  "fonts": {
+    "heading": "Bricolage Grotesque",
+    "body": "Nunito Sans"
+  },
+  "corners": "round",
+  "fields": [
+    { "id": "pet_name", "type": "text", "label": "Your pet's name", "required": true, "maxLength": 40 },
+    { "id": "species", "type": "select", "display": "chips", "label": "Dog or cat?", "required": true, "options": ["Dog", "Cat"] },
+    { "id": "breed", "type": "text", "label": "Breed", "help": "Your best guess is fine for a mix.", "maxLength": 60 },
+    { "id": "weight_kg", "type": "number", "label": "Weight", "unit": "kg", "min": 1, "max": 90, "step": 0.5, "required": true, "help": "We book the table and the dryer by size." },
+    { "id": "coat", "type": "select", "display": "chips", "label": "Coat right now", "required": true, "options": ["Short", "Medium", "Long", "Matted"] },
+    { "id": "handling", "type": "multiselect", "display": "chips", "label": "Anything the groomer should know?", "options": ["Nervous of the dryer", "Doesn't like paws touched", "Senior or has joint pain", "Reacts to other dogs"] },
+    { "id": "rabies_date", "type": "date", "label": "Last rabies vaccine", "dates": "past" },
+    { "id": "vet_phone", "type": "phone", "label": "Your vet's phone number", "help": "Only used in an emergency. It isn't printed in emails.", "sensitive": true },
+    { "id": "vaccines_ok", "type": "checkbox", "label": "My pet's vaccinations are up to date, and I'll bring the record if asked", "required": true }
+  ],
+  "settings": [
+    { "id": "accent", "type": "color", "label": "Accent", "default": "#0f6b5f", "maps": "tokens.primary" },
+    { "id": "shape", "type": "select", "label": "Corners", "options": ["soft", "round", "circle"], "default": "round", "maps": "corners" }
+  ]
+}

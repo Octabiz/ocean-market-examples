@@ -1,0 +1,15 @@
+{
+  "org": { "name": "Bayline Paddle Co.", "initial": "B", "phone": "+1 (902) 555-0163" },
+  "service": {
+    "slug": "sit-on-top-kayak",
+    "highlights": ["Paddles and life jackets in every size", "A map of the calm side of the bay", "Free parking at the launch"],
+    "location": { "type": "in_person", "label": "Launch at Pier 4, Lunenburg", "address": "Pier 4, Lunenburg" },
+    "price": { "currency": "CAD" },
+    "cover": { "url": "preview/cover.svg", "alt": "Two kayaks seen from above on calm water, next to a dock" },
+    "host": { "name": "Bayline dock team" },
+    "cutoffText": "Free to change or cancel up to 24 hours before. After that, we refund half."
+  },
+  "businessFields": [],
+  "guest": { "name": "Hannah Beaulieu", "email": "hannah.beaulieu@gmail.com" },
+  "confirmationMessage": "Check in at the blue shed on Pier 4 fifteen minutes before your start time. We'll fit life jackets there."
+}
